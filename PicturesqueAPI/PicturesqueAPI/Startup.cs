@@ -26,6 +26,20 @@ namespace PicturesqueAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder
+                    /*As long as credentials security is used in your application you should specify domain(s) from which CORS requests may come to your server. */
+                    .WithOrigins(new string[] {
+                        "http://localhost:62455"
+                        }
+                    )
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,6 +54,8 @@ namespace PicturesqueAPI
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseCors("CorsPolicy");
 
             app.UseHttpsRedirection();
             app.UseMvc();
