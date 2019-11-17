@@ -61,6 +61,12 @@ namespace PicturesqueAPI
                 app.UseHsts();
             }
 
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetService<PicturesqueDbContext>();
+                DbInitializer.Initialize(context);
+            }
+
             app.UseCors("CorsPolicy");
 
             app.UseHttpsRedirection();
