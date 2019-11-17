@@ -15,13 +15,14 @@ namespace Picturesque.Domain
             string email,
             string username,
             string password,
+            bool isAdmin,
             CustomId id = null
             )
         {
             Email = email;
             Username = username;
             Password = HashUtils.CreateHashCode(password);
-            IsAdmin = false;
+            IsAdmin = isAdmin;
             IsBlocked = false;
             _id = id ?? new CustomId();
         }
