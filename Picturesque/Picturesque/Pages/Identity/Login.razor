@@ -1,0 +1,21 @@
+﻿@page  "/login"
+@inherits LoginComponent
+
+<h3>Login</h3>
+
+<EditForm Model="@loginInputModel" OnValidSubmit="@HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <p>
+        <label for="email">Email: </label>
+        <InputText id="email" @bind-Value="loginInputModel.Email"></InputText>
+    </p>
+    <p>
+        <label for="password">Password: </label>
+        <input type="password" name="password" @bind-value="loginInputModel.Password" />
+    </p>
+
+    <button type="submit">Login</button>
+
+</EditForm>
