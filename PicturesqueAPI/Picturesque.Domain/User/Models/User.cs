@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Picturesque.Common;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,19 +7,29 @@ namespace Picturesque.Domain
 {
     public sealed class User
     {
+        private CustomId _id;
+
         public User() { }
 
         public User(
             string email,
             string username,
-            string password
+            string password,
+            CustomId id = null
             )
         {
             Email = email;
             Username = username;
-            Password = password;
+            Password = HashUtils.CreateHashCode(password);
             IsAdmin = false;
             IsBlocked = false;
+            _id = id ?? new CustomId();
+        }
+
+        public string Id
+        {
+            get { return this._id.ToString(); }
+            private set { this._id = new CustomId(new Guid(value)); }
         }
 
         public string Email { get; private set; }
