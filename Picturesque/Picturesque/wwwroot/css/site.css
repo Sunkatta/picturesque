@@ -181,3 +181,18 @@ app {
         display: block;
     }
 }
+
+/* CUSTOM CSS */
+
+.login-register-holder {
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-holder {
+    width: 400px;
+    border: 1px solid darkgray;
+    padding: 20px;
+    margin: auto;
+}

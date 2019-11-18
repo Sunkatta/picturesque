@@ -1,21 +1,27 @@
 ﻿@page  "/login"
 @inherits LoginComponent
 
-<h3>Login</h3>
+<div class="login-register-holder">
+    <div class="container">
+        <h3 class="text-center">Login</h3>
+        <div class="form-holder">
+            <EditForm Model="@loginInputModel" OnValidSubmit="@HandleLogin">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
 
-<EditForm Model="@loginInputModel" OnValidSubmit="@HandleLogin">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <InputText id="email" class="form-control" @bind-Value="loginInputModel.Email"></InputText>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" name="password" @bind-value="loginInputModel.Password" />
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-outline-success mt-2 w-100">Login</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
 
-    <p>
-        <label for="email">Email: </label>
-        <InputText id="email" @bind-Value="loginInputModel.Email"></InputText>
-    </p>
-    <p>
-        <label for="password">Password: </label>
-        <input type="password" name="password" @bind-value="loginInputModel.Password" />
-    </p>
-
-    <button type="submit">Login</button>
-
-</EditForm>
