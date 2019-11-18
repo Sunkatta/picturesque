@@ -8,6 +8,6 @@ namespace Picturesque.Domain
     public interface IGameServiceManager
     {
         Task CreateGame();
-        Task GetGameOptions();
+        Task<GameOptions> GetGameOptions();
     }
 }
