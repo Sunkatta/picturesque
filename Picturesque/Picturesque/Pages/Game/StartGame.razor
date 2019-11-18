@@ -1,0 +1,33 @@
+﻿@inherits StartGameComponent
+
+@if (gameOptions == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="@gameOptions" OnValidSubmit="@StartGame">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>Select Category</label>
+        <InputSelect class="form-control" @bind-Value="gameOptions.Categories">
+            <option value="" selected>--</option>
+            @foreach (var category in gameOptions.Categories)
+            {
+                <option value="@category">@category</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="form-group">
+        <label>Select Difficulty</label>
+        <InputSelect class="form-control" @bind-Value="gameOptions.Difficulties">
+            <option value="" selected>--</option>
+            @foreach (var difficulty in gameOptions.Difficulties)
+            {
+                <option value="@difficulty">@difficulty</option>
+            }
+        </InputSelect>
+    </div>
+</EditForm>
+}
