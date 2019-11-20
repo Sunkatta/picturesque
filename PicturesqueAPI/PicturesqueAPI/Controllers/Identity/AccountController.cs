@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Picturesque.Application;
-using Picturesque.DB;
 using Picturesque.Domain;
-using Picturesque.Services;
 
 namespace PicturesqueAPI.Controllers.Identity
 {
@@ -17,9 +13,9 @@ namespace PicturesqueAPI.Controllers.Identity
     {
         private readonly IUserServiceManager _userManager;
 
-        public AccountController(PicturesqueDbContext ctx)
+        public AccountController(IUserServiceManager userManager)
         {
-            _userManager = new UserServiceManager(ctx);
+            _userManager = userManager;
         }
 
         [HttpPost("Register")]

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Picturesque.DB;
 using Picturesque.Domain;
-using Picturesque.Services;
 
 namespace PicturesqueAPI.Controllers.Public
 {
@@ -16,9 +12,9 @@ namespace PicturesqueAPI.Controllers.Public
     {
         private readonly IGameServiceManager _gameManager;
 
-        public GameController(PicturesqueDbContext ctx)
+        public GameController(IGameServiceManager gameManager)
         {
-            _gameManager = new GameServiceManager(ctx);
+            _gameManager = gameManager;
         }
 
         [HttpGet("GetGameOptions")]

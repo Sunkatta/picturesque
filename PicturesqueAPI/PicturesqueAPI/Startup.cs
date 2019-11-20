@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Picturesque.DB;
+using Picturesque.Domain;
+using Picturesque.Services;
 
 namespace PicturesqueAPI
 {
@@ -44,6 +46,9 @@ namespace PicturesqueAPI
                     .AllowAnyHeader()
                     .AllowCredentials());
             });
+
+            services.AddScoped<IUserServiceManager, UserServiceManager>();
+            services.AddScoped<IGameServiceManager, GameServiceManager>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
