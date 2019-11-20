@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Picturesque.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,12 +21,6 @@ namespace Picturesque.Components
         protected async Task StartGame()
         {
 
-        }
-
-        public class GameOptions
-        {
-            public string[] Categories { get; set; }
-            public string[] Difficulties { get; set; }
         }
     }
 }
