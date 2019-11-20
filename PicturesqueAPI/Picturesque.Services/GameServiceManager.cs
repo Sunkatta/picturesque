@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Picturesque.Application;
 using Picturesque.DB;
 using Picturesque.Domain;
 using System;
@@ -21,30 +22,22 @@ namespace Picturesque.Services
             _ctx = ctx;
         }
 
-        public Task CreateGame()
+        public async Task<Game> CreateGame(GameOptionsEntry gameOptions)
         {
-            throw new NotImplementedException();
+            Category category = _ctx.Categories.FirstOrDefault(c => c.Id == gameOptions.CategoryId);
+            Difficulty difficulty;
+            
+            Enum.TryParse(gameOptions.Difficulty, out difficulty);
+
+            return new Game(category, difficulty);
         }
 
         public async Task<GameOptions> GetGameOptions()
         {
-            var categories = await GetCategoriesNames();
+            var categories = await _ctx.Categories.ToListAsync(); ;
             var difficulties = Enum.GetNames(typeof(Difficulty));
 
             return new GameOptions(categories, difficulties);
-        }
-
-        private async Task<List<string>> GetCategoriesNames()
-        {
-            List<string> categoriesNames = new List<string>();
-            var categories = await _ctx.Categories.ToListAsync();
-
-            foreach (var category in categories)
-            {
-                categoriesNames.Add(category.Name);
-            }
-
-            return categoriesNames;
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Picturesque.Domain
     public sealed class GameOptions
     {
         public GameOptions(
-            List<string> categories,
+            List<Category> categories,
             string[] difficulties
             )
         {
@@ -15,7 +15,7 @@ namespace Picturesque.Domain
             Difficulties = difficulties;
         }
 
-        public List<string> Categories { get; set; }
+        public List<Category> Categories { get; set; }
         public string[] Difficulties { get; set; }
     }
 }

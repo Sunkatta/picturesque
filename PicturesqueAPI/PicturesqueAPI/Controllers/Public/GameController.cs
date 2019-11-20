@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Picturesque.Application;
 using Picturesque.Domain;
 
 namespace PicturesqueAPI.Controllers.Public
@@ -28,6 +29,19 @@ namespace PicturesqueAPI.Controllers.Public
             {
                 return BadRequest(ex.Message);
                 throw;
+            }
+        }
+
+        [HttpPost("StartGame")]
+        public async Task<IActionResult> StartGame([FromBody] GameOptionsEntry entry)
+        {
+            try
+            {
+                return Ok(await _gameManager.CreateGame(entry));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }
