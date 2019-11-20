@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Picturesque.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -11,6 +8,7 @@ namespace Picturesque.Components
     public class StartGameComponent : ComponentBase
     {
         public GameOptions gameOptions;
+        public GameOptionsInputModel gameOptionsInputModel = new GameOptionsInputModel();
 
         protected override async Task OnInitializedAsync()
         {
@@ -20,7 +18,12 @@ namespace Picturesque.Components
 
         protected async Task StartGame()
         {
-
+            HttpClient client = new HttpClient();
+            await 
+                client.PostJsonAsync<GameOptionsInputModel>(
+                    "https://localhost:44317/api/Game/StartGame",
+                    gameOptionsInputModel
+                    );
         }
     }
 }

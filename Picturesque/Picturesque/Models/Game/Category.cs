@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Picturesque.Models
 {
-    public class GameOptions
+    public class Category
     {
-        public List<Category> Categories { get; set; }
-        public string[] Difficulties { get; set; }
+        public string Id { get; set; }
+        public string Name { get; set; }
     }
 }
