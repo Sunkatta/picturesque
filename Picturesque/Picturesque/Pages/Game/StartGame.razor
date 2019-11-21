@@ -18,6 +18,8 @@ else
                         {
                         <option value="@category.Id">@category.Name</option>
                         }
+                    /**/
+                    /**/
                 </InputSelect>
             </div>
             <div class="form-group col-md-4">
@@ -28,6 +30,8 @@ else
                         {
                         <option value="@difficulty">@difficulty</option>
                         }
+                    /**/
+                    /**/
                 </InputSelect>
             </div>
             <div class="form-group text-center col-md-4">
@@ -36,4 +40,8 @@ else
             </div>
         </div>
     </EditForm>
+
+    <p>@game.NumberOfTiles</p>
+    <p>@game.CategoryId</p>
+    <p>@game.Difficulty</p>
 }
