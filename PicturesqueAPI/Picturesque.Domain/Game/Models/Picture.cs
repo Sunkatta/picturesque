@@ -27,5 +27,8 @@ namespace Picturesque.Domain
         }
 
         public string Img2Base64 { get; set; }
+
+        public ICollection<PicturesCategories> Categories { get; private set; } =
+            new HashSet<PicturesCategories>();
     }
 }

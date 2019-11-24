@@ -28,7 +28,7 @@ namespace Picturesque.Domain
 
         public string Name { get; set; }
 
-        //public ICollection<CategoriesPictures> Pictures { get; private set; } =
-        //    new HashSet<CategoriesPictures>();
+        public ICollection<PicturesCategories> Pictures { get; private set; } =
+            new HashSet<PicturesCategories>();
     }
 }
