@@ -11,6 +11,6 @@ namespace Picturesque.Models
         public string CategoryId { get; set; }
         public int Difficulty { get; set; }
         public int NumberOfTiles { get; set; }
-        public List<string> Pictures { get; set; }
+        public List<Picture> Pictures { get; set; }
     }
 }

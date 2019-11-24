@@ -14,12 +14,12 @@ namespace Picturesque.Domain
         {
             CategoryId = categoryId;
             Difficulty = difficulty;
-            Pictures = GetPictures(pictures);
+            Pictures = pictures;
         }
 
         public string CategoryId { get; private set; }
         public Difficulty Difficulty { get; private set; }
-        public List<string> Pictures { get; set; }
+        public List<Picture> Pictures { get; set; }
 
         private List<string> GetPictures(List<Picture> pictures)
         {

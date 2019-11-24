@@ -6,6 +6,7 @@
 }
 else
 {
+    <p>@successMessage</p>
     <EditForm Model="@gameOptionsInputModel" OnValidSubmit="@StartGame">
         <DataAnnotationsValidator />
         <ValidationSummary />
@@ -47,8 +48,14 @@ else
             <div class="row">
                 @foreach (var picture in game.Pictures)
                 {
-                    <div class="col-md-3" style="border: 1px solid black; padding: 0">
-                        <img style="width: 100%; height: auto;" src="@picture" />
+                    <div 
+                         @onclick="e => ShowPicture(picture)"
+                         class="col-md-3"
+                         style="border: 1px solid black; padding: 0">
+                        <img
+                             class="img @(!picture.IsVisible ? "img-hidden" : "")"
+                             src="@picture.Img2Base64"
+                             />
                     </div>
                 }
             </div>
@@ -86,10 +93,6 @@ else
         default:
             break;
     }
-
-
-
-
 }
 
 @code {
