@@ -18,8 +18,6 @@ else
                         {
                         <option value="@category.Id">@category.Name</option>
                         }
-                    /**/
-                    /**/
                 </InputSelect>
             </div>
             <div class="form-group col-md-4">
@@ -30,8 +28,6 @@ else
                         {
                         <option value="@difficulty">@difficulty</option>
                         }
-                    /**/
-                    /**/
                 </InputSelect>
             </div>
             <div class="form-group text-center col-md-4">
@@ -41,7 +37,62 @@ else
         </div>
     </EditForm>
 
-    <p>@game.NumberOfTiles</p>
-    <p>@game.CategoryId</p>
-    <p>@game.Difficulty</p>
+    @switch (game.Difficulty)
+    {
+        case 0:
+            tileNumber = 0;
+            @for (int i = 0; i < game.NumberOfTiles / 4; i++)
+            {
+                <div class="row">
+                    @for (int j = 0; j < game.NumberOfTiles / 4; j++)
+                    {
+                        <div class="col-md-3" style="border: 1px solid red;">
+                            @tileNumber
+                        </div>
+                        tileNumber++;
+                    }
+                </div>
+            }
+            break;
+        case 1:
+            tileNumber = 0;
+            @for (int i = 0; i < game.NumberOfTiles / 6; i++)
+            {
+                <div class="row">
+                    @for (int j = 0; j < game.NumberOfTiles / 6; j++)
+                    {
+                        <div class="col-md-2" style="border: 1px solid red;">
+                            @tileNumber
+                        </div>
+                        tileNumber++;
+                    }
+                </div>
+            }
+            break;
+        case 2:
+            tileNumber = 0;
+            @for (int i = 0; i < game.NumberOfTiles / 8; i++)
+            {
+                <div class="section group">
+                    @for (int j = 0; j < game.NumberOfTiles / 8; j++)
+                    {
+                        <div class="col span_1_of_8" style="border: 1px solid red;">
+                            @tileNumber
+                        </div>
+                        tileNumber++;
+                    }
+                </div>
+            }
+            break;
+        default:
+            break;
+    }
+
+
+
+
+}
+
+@code {
+    int tileNumber = 0;
 }

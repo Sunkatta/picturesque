@@ -34,7 +34,7 @@ namespace Picturesque.Services
 
         public async Task<GameOptions> GetGameOptions()
         {
-            var categories = await _ctx.Categories.ToListAsync(); ;
+            var categories = await _ctx.Categories.ToListAsync();
             var difficulties = Enum.GetNames(typeof(Difficulty));
 
             return new GameOptions(categories, difficulties);
