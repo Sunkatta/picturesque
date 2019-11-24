@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Picturesque.Models;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -15,6 +16,8 @@ namespace Picturesque.Components
 
         protected override async Task OnInitializedAsync()
         {
+            game.Pictures = new List<string>();
+
             HttpClient client = new HttpClient();
             gameOptions = await client.GetJsonAsync<GameOptions>("https://localhost:44317/api/Game/GetGameOptions");
         }
