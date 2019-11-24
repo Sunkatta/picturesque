@@ -15,6 +15,7 @@ namespace Picturesque.DB
             if (!context.Users.Any()) InitialUsers.Seed(context);
             if (!context.Categories.Any()) InitialCategories.Seed(context);
             if (!context.Pictures.Any()) InitialPictures.Seed(context);
+            if (!context.PicturesCategories.Any()) InitialPicturesCategories.Seed(context);
         }
     }
 }
