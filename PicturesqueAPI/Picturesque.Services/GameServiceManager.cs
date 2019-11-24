@@ -24,12 +24,20 @@ namespace Picturesque.Services
 
         public async Task<Game> CreateGame(GameOptionsEntry gameOptions)
         {
-            Category category = await _ctx.Categories.FirstOrDefaultAsync(c => c.Id == gameOptions.CategoryId);
+            Category category = 
+                await _ctx.Categories
+                .FirstOrDefaultAsync(c => c.Id == gameOptions.CategoryId);
+
+            var pictures = 
+                await _ctx.Pictures
+                .Where(
+                    p => p.Categories.FirstOrDefault().CategoryId == category.Id)
+                .ToListAsync();
+
             Difficulty difficulty;
-            
             Enum.TryParse(gameOptions.Difficulty, out difficulty);
 
-            return new Game(category.Id, difficulty);
+            return new Game(category.Id, difficulty, pictures);
         }
 
         public async Task<GameOptions> GetGameOptions()
