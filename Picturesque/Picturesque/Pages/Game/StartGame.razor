@@ -16,11 +16,9 @@ else
                 <InputSelect class="form-control" @bind-Value="gameOptionsInputModel.CategoryId">
                     <option value="" selected>--</option>
                     @foreach (var category in gameOptions.Categories)
-                        {
+                     {
                         <option value="@category.Id">@category.Name</option>
-                        }
-                    /**/
-                    /**/
+                     }
                 </InputSelect>
             </div>
             <div class="form-group col-md-4">
@@ -28,11 +26,9 @@ else
                 <InputSelect class="form-control" @bind-Value="gameOptionsInputModel.Difficulty">
                     <option value="" selected>--</option>
                     @foreach (var difficulty in gameOptions.Difficulties)
-                        {
+                     {
                         <option value="@difficulty">@difficulty</option>
-                        }
-                    /**/
-                    /**/
+                     }
                 </InputSelect>
             </div>
             <div class="form-group text-center col-md-4">
@@ -48,7 +44,7 @@ else
             <div class="row">
                 @foreach (var picture in game.Pictures)
                 {
-                    <div 
+                    <div
                          @onclick="e => ShowPicture(picture)"
                          class="col-md-3"
                          style="border: 1px solid black; padding: 0">

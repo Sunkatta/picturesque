@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Picturesque.Components
@@ -35,28 +36,37 @@ namespace Picturesque.Components
                     );
         }
 
-        protected void ShowPicture(Picture picture)
+        protected async Task ShowPicture(Picture picture)
         {
-            numberOfPicturesVisible++;
-            picture.IsVisible = !picture.IsVisible;
+            if (!picture.IsVisible && numberOfPicturesVisible < 2)
+            {
+                numberOfPicturesVisible++;
+                picture.IsVisible = true;
 
-            if(selectedPicture != null && numberOfPicturesVisible == 2 && picture.IsVisible)
-            {
-                if(String.Compare(picture.Img2Base64.ToLower(), selectedPicture.Img2Base64.ToLower()) == 0)
+                if (selectedPicture != null && numberOfPicturesVisible == 2)
                 {
-                    successMessage = "SUCCESS";
-                } else
-                {
-                    successMessage = "FAIL";
-                    selectedPicture.IsVisible = false;
-                    picture.IsVisible = false;
+                    await Task.Delay(500);
+                    if (String.Compare(picture.Img2Base64.ToLower(), selectedPicture.Img2Base64.ToLower()) == 0)
+                    {
+                        successMessage = "SUCCESS";
+                    }
+                    else
+                    {
+                        successMessage = "FAIL";
+                        selectedPicture.IsVisible = false;
+                        picture.IsVisible = false;
+                    }
+                    selectedPicture = null;
+                    picture = null;
+                    numberOfPicturesVisible = 0;
                 }
-                selectedPicture = null;
-                numberOfPicturesVisible = 0;
-            } else
-            {
-                selectedPicture = picture;
+                else
+                {
+                    selectedPicture = picture;
+                    numberOfPicturesVisible = 1;
+                }
             }
+            
         }
     }
 }
