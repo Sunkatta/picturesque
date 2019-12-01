@@ -1,5 +1,6 @@
 ﻿@page  "/login"
-@inherits LoginComponent
+@inject HttpClient client
+@inject TokenAuthenticationStateProvider authStateProvider
 
 <div class="login-register-holder">
     <div class="container">
@@ -25,3 +26,17 @@
     </div>
 </div>
 
+@code  {
+    LoginInputModel loginInputModel = new LoginInputModel();
+
+    protected async Task HandleLogin()
+    {
+        string token =
+            await client.PostJsonAsync<string>("https://localhost:44317/api/Account/Login", loginInputModel);
+
+        if (token != null)
+        {
+            await authStateProvider.SetTokenAsync(token);
+        }
+    }
+}
