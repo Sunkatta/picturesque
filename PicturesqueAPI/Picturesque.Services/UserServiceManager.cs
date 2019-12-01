@@ -78,7 +78,7 @@ namespace Picturesque.Services
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[] {
-                new Claim(JwtRegisteredClaimNames.Email, userInfo.Email),
+                new Claim(ClaimTypes.Name, userInfo.Email),
                 new Claim("is_admin", userInfo.IsAdmin.ToString())
             };
 
