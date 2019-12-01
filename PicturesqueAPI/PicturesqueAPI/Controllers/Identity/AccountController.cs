@@ -59,7 +59,7 @@ namespace PicturesqueAPI.Controllers.Identity
             if (user != null)
             {
                 var tokenString = GenerateJSONWebToken(user);
-                response = Ok(new { token = tokenString });
+                response = Ok(tokenString);
             }
 
             return response;
@@ -71,7 +71,7 @@ namespace PicturesqueAPI.Controllers.Identity
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[] {
-                new Claim(JwtRegisteredClaimNames.Sub, userInfo.Email)
+                new Claim(JwtRegisteredClaimNames.Email, userInfo.Email)
             };
 
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],
