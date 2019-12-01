@@ -27,19 +27,7 @@ namespace Picturesque
 
         public async Task<string> GetTokenAsync()
         {
-            var expiry = await _jsRuntime.InvokeAsync<object>("localStorage.getItem", "authTokenExpiry");
-            if (expiry != null)
-            {
-                if (DateTime.Parse(expiry.ToString()) > DateTime.Now)
-                {
-                    return await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
-                }
-                else
-                {
-                    await SetTokenAsync(null);
-                }
-            }
-            return null;
+            return await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
