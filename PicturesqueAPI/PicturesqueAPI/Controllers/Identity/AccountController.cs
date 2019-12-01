@@ -1,12 +1,8 @@
 ﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using Picturesque.Application;
 using Picturesque.Domain;
 
@@ -18,12 +14,10 @@ namespace PicturesqueAPI.Controllers.Identity
     public class AccountController : Controller
     {
         private readonly IUserServiceManager _userManager;
-        private readonly IConfiguration _config;
 
-        public AccountController(IUserServiceManager userManager, IConfiguration config)
+        public AccountController(IUserServiceManager userManager)
         {
             _userManager = userManager;
-            _config = config;
         }
 
         [HttpPost("Register")]
@@ -51,49 +45,25 @@ namespace PicturesqueAPI.Controllers.Identity
 
         [AllowAnonymous]
         [HttpPost("Login")]
-        public IActionResult Login([FromBody]LoginUserEntry login)
+        public async Task<IActionResult> Login([FromBody]LoginUserEntry login)
         {
-            IActionResult response = Unauthorized();
-            var user = AuthenticateUser(login);
-
-            if (user != null)
+            try
             {
-                var tokenString = GenerateJSONWebToken(user);
-                response = Ok(tokenString);
+                string token = await _userManager.GenerateJWTAsync(login);
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized();
+                }
+                else
+                {
+                    return Ok(token);
+                }
             }
-
-            return response;
-        }
-
-        private string GenerateJSONWebToken(LoginUserEntry userInfo)
-        {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[] {
-                new Claim(JwtRegisteredClaimNames.Email, userInfo.Email)
-            };
-
-            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
-              _config["Jwt:Audience"],
-              claims,
-              expires: DateTime.Now.AddMinutes(120),
-              signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
-        private LoginUserEntry AuthenticateUser(LoginUserEntry login)
-        {
-            LoginUserEntry user = null;
-
-            //Validate the User Credentials  
-            //Demo Purpose, I have Passed HardCoded User Information  
-            if (login.Email == "sunni98@abv.bg")
+            catch (Exception ex)
             {
-                user = new LoginUserEntry { Email = "Lusian Manolov"};
+                return BadRequest(ex.Message);
             }
-            return user;
         }
     }
 }
