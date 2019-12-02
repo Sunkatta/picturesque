@@ -7,6 +7,10 @@ namespace Picturesque.Domain
 {
     public interface ICategoryServiceManager
     {
+        Task CreateCategoryAsync(Category category);
+        Task DeleteCategoryAsync(Category category);
         Task<IEnumerable<CategoryView>> GetCategoriesAsync();
+        Task<Category> GetRawCategoryById(string id);
+        Task UpdateCategoryAsync(Category category);
     }
 }
