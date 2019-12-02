@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@inject TokenAuthenticationStateProvider authStateProvider
 
 <div class="sidebar">
     <NavMenu />
@@ -6,12 +7,21 @@
 
 <div class="main">
     <div class="top-row px-4" style="z-index: 9999;">
-        <AuthorizeView>
-            <Authorized>
-                <p>Logged in as @context.User.Identity.Name</p>
-            </Authorized>
-            <NotAuthorized>
-                <ul class="nav navbar">
+        <ul class="nav navbar">
+            <AuthorizeView>
+                <Authorized>
+                    <li class="nav-item px-3">
+                        Logged in as @context.User.Identity.Name
+                    </li>
+                    <li class="nav-item px-3">
+                        <button 
+                                class="btn btn-sm btn-outline-dark"
+                                @onclick="@(() => authStateProvider.SetTokenAsync(null))">
+                            Logout
+                        </button>
+                    </li>
+                </Authorized>
+                <NotAuthorized>
                     <li class="nav-item px-3">
                         <NavLink class="ml-md-auto" href="login">
                             Login
@@ -22,9 +32,9 @@
                             Register
                         </NavLink>
                     </li>
-                </ul>
-            </NotAuthorized>
-        </AuthorizeView>
+                </NotAuthorized>
+            </AuthorizeView>
+        </ul>
     </div>
 
     <div class="content px-4">

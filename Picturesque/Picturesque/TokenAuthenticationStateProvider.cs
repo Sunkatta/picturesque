@@ -18,9 +18,16 @@ namespace Picturesque
             _jsRuntime = jsRuntime;
         }
 
-        public async Task SetTokenAsync(string token, DateTime expiry = default)
+        public async Task SetTokenAsync(string token)
         {
-            await _jsRuntime.InvokeAsync<object>("localStorage.setItem", "authToken", token);
+            if (token == null)
+            {
+                await _jsRuntime.InvokeAsync<object>("localStorage.removeItem", "authToken");
+            }
+            else
+            {
+                await _jsRuntime.InvokeAsync<object>("localStorage.setItem", "authToken", token);
+            }
 
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
