@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Picturesque.Application;
 using Picturesque.DB;
 using Picturesque.Domain;
 using Picturesque.Services;
@@ -69,6 +71,15 @@ namespace PicturesqueAPI
 
             services.AddScoped<IUserServiceManager, UserServiceManager>();
             services.AddScoped<IGameServiceManager, GameServiceManager>();
+            services.AddScoped<ICategoryServiceManager, CategoryServiceManager>();
+
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.CreateMap<Category, CategoryView>();
+            });
+
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
