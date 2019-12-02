@@ -1,0 +1,124 @@
+﻿@page "/categories"
+@using System.Net.Http.Headers;
+@inject HttpClient Http
+@inject TokenAuthenticationStateProvider TokenProvider
+@attribute [Authorize]
+
+<h1>Categories</h1>
+
+@if (categories == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row justify-content-end mr-3 mt-4">
+        <button class="btn btn-primary"
+                @onclick="OnAddCategory">
+            Add new category
+        </button>
+    </div>
+    @if (addingCategory)
+    {
+        <EditForm Model="category" OnValidSubmit="AddCategory">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group">
+                <label for="name">Category Name</label>
+                <InputText id="name" class="form-control" @bind-Value="category.Name"></InputText>
+            </div>
+            <button type="submit" class="btn btn-outline-success mt-2 w-100">Create Category</button>
+        </EditForm>
+    }
+    @if (editingCategory)
+    {
+        <EditForm Model="category" OnValidSubmit="EditCategory">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group">
+                <label for="name">Category Name</label>
+                <InputText id="name" class="form-control" @bind-Value="category.Name"></InputText>
+            </div>
+            <button type="submit" class="btn btn-outline-success mt-2 w-100">Edit Category</button>
+        </EditForm>
+    }
+    <table class="table mt-2">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in categories)
+            {
+                <tr>
+                    <td>@category.Id</td>
+                    <td>@category.Name</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => OnEditCategory(category.Id)">Edit</button>
+                    </td>
+                    <td>
+                        <button 
+                                class="btn btn-outline-danger"
+                                @onclick="() => DeleteCategory(category.Id)">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Category[] categories;
+    private Category category = new Category();
+    private bool addingCategory = false;
+    private bool editingCategory = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await TokenProvider.GetTokenAsync();
+        if (token != null)
+        {
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            categories = await Http.GetJsonAsync<Category[]>("https://localhost:44317/api/Category");
+        }
+    }
+
+    protected void OnAddCategory()
+    {
+        addingCategory = !addingCategory;
+    }
+
+    protected void OnEditCategory(string categoryId)
+    {
+        editingCategory = !editingCategory;
+        category = categories.FirstOrDefault(c => c.Id == categoryId);
+    }
+
+    protected async Task AddCategory()
+    {
+        await Http.PostJsonAsync("https://localhost:44317/api/Category/CreateCategory", category);
+        categories = null;
+        categories = await Http.GetJsonAsync<Category[]>("https://localhost:44317/api/Category");
+    }
+
+    protected async Task EditCategory()
+    {
+        await Http.PostJsonAsync("https://localhost:44317/api/Category/UpdateCategory", category);
+        categories = null;
+        categories = await Http.GetJsonAsync<Category[]>("https://localhost:44317/api/Category");
+    }
+
+    protected async Task DeleteCategory(string categoryId)
+    {
+        category = categories.FirstOrDefault(c => c.Id == categoryId);
+        categories =
+            await Http.PostJsonAsync<Category[]>("https://localhost:44317/api/Category/DeleteCategory", category);
+    }
+}
