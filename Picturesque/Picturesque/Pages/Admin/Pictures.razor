@@ -1,0 +1,34 @@
+﻿@page "/pictures"
+@using System.Net.Http.Headers;
+@inject HttpClient Http
+@inject TokenAuthenticationStateProvider TokenProvider
+@attribute [Authorize]
+
+<h3>Pictures</h3>
+
+@if (pictures == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @foreach (var picture in pictures)
+    {
+        <img src="@picture.Img2Base64" />
+        <p>@picture.CategoryName</p>
+    }
+}
+
+@code {
+    private Picture[] pictures;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await TokenProvider.GetTokenAsync();
+        if (token != null)
+        {
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            pictures = await Http.GetJsonAsync<Picture[]>("https://localhost:44317/api/Picture");
+        }
+    }
+}
