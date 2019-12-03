@@ -24,12 +24,33 @@ else
         <input class="form-control" type="file" multiple @ref=inputTypeFileElement />
         <button class="btn btn-outline-success mt-2 w-100" @onclick=UploadFiles>Upload files</button>
     }
+    @if (editingPicture)
+    {
+        <EditForm Model="picture" OnValidSubmit="AddCategoryToPicture">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group col-md-4">
+                <label>Select Category</label>
+                <InputSelect class="form-control" @bind-Value="picture.CategoryId">
+                    <option value="" selected>--</option>
+                    @foreach (var category in categories)
+                            {
+                        <option value="@category.Id">@category.Name</option>
+                            }
+                    /**/
+                </InputSelect>
+            </div>
+            <button type="submit" class="btn btn-outline-success mt-2 w-100">Add Category</button>
+        </EditForm>
+    }
     <div class="row">
         @foreach (var picture in pictures)
         {
             <div class="col-md-3" style="border: 1px solid black; padding: 0">
-                <img src="@picture.Img2Base64" />
+                <img class="img" src="@picture.Img2Base64" />
                 <p>@picture.CategoryName</p>
+                <button class="btn btn-primary" @onclick="() => OnEditPicture(picture.Id)">Edit</button>
             </div>
         }
     </div>
@@ -37,6 +58,8 @@ else
 
 @code {
     private Picture[] pictures;
+    private Picture picture = new Picture();
+    private Category[] categories;
     private bool addingPicture = false;
     private bool editingPicture = false;
     ElementReference inputTypeFileElement;
@@ -49,6 +72,7 @@ else
         {
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             pictures = await Http.GetJsonAsync<Picture[]>("https://localhost:44317/api/Picture");
+            categories = await Http.GetJsonAsync<Category[]>("https://localhost:44317/api/Category");
         }
     }
 
@@ -63,6 +87,12 @@ else
         editingPicture = false;
     }
 
+    protected void OnEditPicture(string pictureId)
+    {
+        editingPicture = !editingPicture;
+        picture = pictures.FirstOrDefault(c => c.Id == pictureId);
+    }
+
     protected async Task UploadFiles()
     {
         var multipartFormDataContent = new MultipartFormDataContent();
@@ -74,7 +104,16 @@ else
                 (await file.ReadFileInfoAsync()).Name);
         }
 
-        var res = await Http.PostAsync("https://localhost:44317/api/Picture/UploadPictures", 
+        var res = await Http.PostAsync("https://localhost:44317/api/Picture/UploadPictures",
                 content: multipartFormDataContent);
+    }
+
+    protected async Task AddCategoryToPicture()
+    {
+        await Http.PostJsonAsync("https://localhost:44317/api/Picture/UpdatePictureCategory", picture);
+        pictures = null;
+        pictures = await Http.GetJsonAsync<Picture[]>("https://localhost:44317/api/Picture");
+        editingPicture = false;
+        picture = new Picture();
     }
 }
