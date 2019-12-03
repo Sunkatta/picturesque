@@ -15,19 +15,20 @@ namespace Picturesque.Services
         private const int TIME_LIMIT = 10;
         private const int NUMBER_OF_MISTAKES = 5;
         private static Random rand = new Random();
+        private readonly ICategoryServiceManager _categoryManager;
 
         private readonly PicturesqueDbContext _ctx;
 
-        public GameServiceManager(PicturesqueDbContext ctx)
+        public GameServiceManager(PicturesqueDbContext ctx, ICategoryServiceManager categoryManager)
         {
             _ctx = ctx;
+            _categoryManager = categoryManager;
         }
 
         public async Task<Game> CreateGame(GameOptionsEntry gameOptions)
         {
             Category category =
-                await _ctx.Categories
-                .FirstOrDefaultAsync(c => c.Id == gameOptions.CategoryId);
+                await _categoryManager.GetRawCategoryById(gameOptions.CategoryId);
             Difficulty difficulty;
             Enum.TryParse(gameOptions.Difficulty, out difficulty);
 
@@ -40,10 +41,10 @@ namespace Picturesque.Services
 
         public async Task<GameOptions> GetGameOptions()
         {
-            var categories = await _ctx.Categories.ToListAsync();
+            var categories = await _categoryManager.GetCategoriesAsync();
             var difficulties = Enum.GetNames(typeof(Difficulty));
 
-            return new GameOptions(categories, difficulties);
+            return new GameOptions(categories.ToList(), difficulties);
         }
 
         #region Private Methods
