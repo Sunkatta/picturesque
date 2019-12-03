@@ -11,6 +11,7 @@ namespace Picturesque.Domain
         Task DeleteCategoryAsync(Category category);
         Task<IEnumerable<CategoryView>> GetCategoriesAsync();
         Task<Category> GetRawCategoryById(string id);
+        Task<Category> GetRawCategoryByName(string name);
         Task UpdateCategoryAsync(Category category);
     }
 }

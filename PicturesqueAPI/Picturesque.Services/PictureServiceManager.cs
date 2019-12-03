@@ -16,11 +16,38 @@ namespace Picturesque.Services
     {
         private readonly PicturesqueDbContext _ctx;
         private readonly IMapper _mapper;
+        private readonly ICategoryServiceManager _categoryServiceManager;
 
-        public PictureServiceManager(PicturesqueDbContext ctx, IMapper mapper)
+        public PictureServiceManager(
+            PicturesqueDbContext ctx, 
+            IMapper mapper,
+            ICategoryServiceManager categoryServiceManager
+        )
         {
             _ctx = ctx;
             _mapper = mapper;
+            _categoryServiceManager = categoryServiceManager;
+        }
+
+        public async Task AddPictureToCategory(Picture picture, string categoryName)
+        {
+            var category = 
+                await _categoryServiceManager.GetRawCategoryByName(categoryName);
+
+            var pictureCategory =
+                new PicturesCategories(
+                    category.Id,
+                    picture.Id
+                    );
+
+            await _ctx.AddAsync(pictureCategory);
+            await _ctx.SaveChangesAsync();
+        }
+
+        public async Task DeletePictureAsync(Picture picture)
+        {
+            _ctx.Pictures.Remove(picture);
+            await _ctx.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<PictureView>> GetPicturesAsync()
@@ -40,6 +67,28 @@ namespace Picturesque.Services
             return pics;
         }
 
+        public async Task<Picture> GetRawPictureById(string id)
+        {
+            return
+                await _ctx.Pictures
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == id);
+        }
+
+        public async Task UpdatePictureCategoryAsync(string categoryId, string pictureId)
+        {
+            var pictureCategory =
+                await _ctx.PicturesCategories
+                .FirstOrDefaultAsync(c => c.PictureId == pictureId);
+
+            _ctx.PicturesCategories.Remove(pictureCategory);
+
+            pictureCategory = new PicturesCategories(categoryId, pictureId);
+
+            await _ctx.PicturesCategories.AddAsync(pictureCategory);
+            await _ctx.SaveChangesAsync();
+        }
+
         public async Task UploadPicturesAsync(List<IFormFile> files)
         {
             foreach (var file in files)
@@ -53,6 +102,7 @@ namespace Picturesque.Services
                         string img2Base64 = "data:image/jpeg;base64," + Convert.ToBase64String(fileBytes);
                         Picture picture = new Picture(img2Base64);
                         await _ctx.Pictures.AddAsync(picture);
+                        await AddPictureToCategory(picture, "No Category");
                     }
                 }
             }

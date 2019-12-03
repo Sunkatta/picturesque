@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Picturesque.Application;
 using Picturesque.Domain;
 
 namespace PicturesqueAPI.Controllers.Admin
@@ -20,10 +21,48 @@ namespace PicturesqueAPI.Controllers.Admin
             _pictureServiceManager = pictureServiceManager;
         }
 
+        [HttpPost("DeletePicture")]
+        public async Task<IActionResult> DeleteCategory([FromBody]DeletePictureEntry entry)
+        {
+            try
+            {
+                Picture picture = await _pictureServiceManager.GetRawPictureById(entry.Id);
+                await _pictureServiceManager.DeletePictureAsync(picture);
+
+                return Ok(await _pictureServiceManager.GetPicturesAsync());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("UpdatePictureCategory")]
+        public async Task<IActionResult> UpdatePictureCategory([FromBody]UpdatePictureEntry entry)
+        {
+            try
+            {
+                await _pictureServiceManager.UpdatePictureCategoryAsync(entry.CategoryId, entry.Id);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _pictureServiceManager.GetPicturesAsync());
+            try
+            {
+                return Ok(await _pictureServiceManager.GetPicturesAsync());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("UploadPictures")]

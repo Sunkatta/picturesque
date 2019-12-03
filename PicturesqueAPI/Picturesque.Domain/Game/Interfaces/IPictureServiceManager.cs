@@ -8,7 +8,11 @@ namespace Picturesque.Domain
 {
     public interface IPictureServiceManager
     {
+        Task AddPictureToCategory(Picture picture, string categoryName);
+        Task DeletePictureAsync(Picture picture);
         Task<IEnumerable<PictureView>> GetPicturesAsync();
+        Task<Picture> GetRawPictureById(string id);
+        Task UpdatePictureCategoryAsync(string categoryId, string pictureId);
         Task UploadPicturesAsync(List<IFormFile> files);
     }
 }

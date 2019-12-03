@@ -49,6 +49,14 @@ namespace Picturesque.Services
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
+        public async Task<Category> GetRawCategoryByName(string name)
+        {
+            return
+                await _ctx.Categories
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Name == name);
+        }
+
         public async Task UpdateCategoryAsync(Category category)
         {
             _ctx.Entry(category).State = EntityState.Modified;
