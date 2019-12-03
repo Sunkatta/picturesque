@@ -39,6 +39,7 @@ else
                         <option value="@category.Id">@category.Name</option>
                             }
                     /**/
+                    /**/
                 </InputSelect>
             </div>
             <button type="submit" class="btn btn-outline-success mt-2 w-100">Add Category</button>
@@ -51,6 +52,10 @@ else
                 <img class="img" src="@picture.Img2Base64" />
                 <p>@picture.CategoryName</p>
                 <button class="btn btn-primary" @onclick="() => OnEditPicture(picture.Id)">Edit</button>
+                <button class="btn btn-outline-danger"
+                        @onclick="() => DeletePicture(picture.Id)">
+                    Delete
+                </button>
             </div>
         }
     </div>
@@ -106,6 +111,7 @@ else
 
         var res = await Http.PostAsync("https://localhost:44317/api/Picture/UploadPictures",
                 content: multipartFormDataContent);
+        pictures = await Http.GetJsonAsync<Picture[]>("https://localhost:44317/api/Picture");
     }
 
     protected async Task AddCategoryToPicture()
@@ -114,6 +120,14 @@ else
         pictures = null;
         pictures = await Http.GetJsonAsync<Picture[]>("https://localhost:44317/api/Picture");
         editingPicture = false;
+        picture = new Picture();
+    }
+
+    protected async Task DeletePicture(string pictureId)
+    {
+        picture = pictures.FirstOrDefault(c => c.Id == pictureId);
+        pictures =
+            await Http.PostJsonAsync<Picture[]>("https://localhost:44317/api/Picture/DeletePicture", picture);
         picture = new Picture();
     }
 }
