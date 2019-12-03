@@ -93,11 +93,14 @@ else
     protected void OnAddCategory()
     {
         addingCategory = !addingCategory;
+        editingCategory = false;
+        category = new Category();
     }
 
     protected void OnEditCategory(string categoryId)
     {
         editingCategory = !editingCategory;
+        addingCategory = false;
         category = categories.FirstOrDefault(c => c.Id == categoryId);
     }
 
@@ -106,6 +109,8 @@ else
         await Http.PostJsonAsync("https://localhost:44317/api/Category/CreateCategory", category);
         categories = null;
         categories = await Http.GetJsonAsync<Category[]>("https://localhost:44317/api/Category");
+        addingCategory = false;
+        category = new Category();
     }
 
     protected async Task EditCategory()
@@ -113,6 +118,8 @@ else
         await Http.PostJsonAsync("https://localhost:44317/api/Category/UpdateCategory", category);
         categories = null;
         categories = await Http.GetJsonAsync<Category[]>("https://localhost:44317/api/Category");
+        editingCategory = false;
+        category = new Category();
     }
 
     protected async Task DeleteCategory(string categoryId)
@@ -120,5 +127,6 @@ else
         category = categories.FirstOrDefault(c => c.Id == categoryId);
         categories =
             await Http.PostJsonAsync<Category[]>("https://localhost:44317/api/Category/DeleteCategory", category);
+        category = new Category();
     }
 }
