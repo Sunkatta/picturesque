@@ -2,6 +2,7 @@
 @using System.Net.Http.Headers;
 @inject HttpClient Http
 @inject TokenAuthenticationStateProvider TokenProvider
+@inject IFileReaderService fileReaderService
 @attribute [Authorize]
 
 <h3>Pictures</h3>
@@ -12,15 +13,34 @@
 }
 else
 {
-    @foreach (var picture in pictures)
+    <div class="row justify-content-end mr-3 mt-4">
+        <button class="btn btn-primary"
+                @onclick="OnAddPicture">
+            Add new picture
+        </button>
+    </div>
+    @if (addingPicture)
     {
-        <img src="@picture.Img2Base64" />
-        <p>@picture.CategoryName</p>
+        <input class="form-control" type="file" multiple @ref=inputTypeFileElement />
+        <button class="btn btn-outline-success mt-2 w-100" @onclick=UploadFiles>Upload files</button>
     }
+    <div class="row">
+        @foreach (var picture in pictures)
+        {
+            <div class="col-md-3" style="border: 1px solid black; padding: 0">
+                <img src="@picture.Img2Base64" />
+                <p>@picture.CategoryName</p>
+            </div>
+        }
+    </div>
 }
 
 @code {
     private Picture[] pictures;
+    private bool addingPicture = false;
+    private bool editingPicture = false;
+    ElementReference inputTypeFileElement;
+    IFileReaderRef fileReaderReference;
 
     protected override async Task OnInitializedAsync()
     {
@@ -30,5 +50,31 @@ else
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             pictures = await Http.GetJsonAsync<Picture[]>("https://localhost:44317/api/Picture");
         }
+    }
+
+    protected override void OnAfterRender(bool isFirstRender)
+    {
+        fileReaderReference = fileReaderService.CreateReference(inputTypeFileElement);
+    }
+
+    protected void OnAddPicture()
+    {
+        addingPicture = !addingPicture;
+        editingPicture = false;
+    }
+
+    protected async Task UploadFiles()
+    {
+        var multipartFormDataContent = new MultipartFormDataContent();
+        foreach (var file in await fileReaderReference.EnumerateFilesAsync())
+        {
+            multipartFormDataContent.Add(
+                new StreamContent(await file.OpenReadAsync(), 8192),
+                "files",
+                (await file.ReadFileInfoAsync()).Name);
+        }
+
+        var res = await Http.PostAsync("https://localhost:44317/api/Picture/UploadPictures", 
+                content: multipartFormDataContent);
     }
 }
