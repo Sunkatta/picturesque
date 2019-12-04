@@ -1,0 +1,50 @@
+﻿@page "/leaderboard"
+@using System.Net.Http.Headers;
+@inject HttpClient Http
+@inject TokenAuthenticationStateProvider TokenProvider
+@attribute [Authorize]
+
+<h1>Leaderboard</h1>
+
+@if (gameScores == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Category</th>
+                <th>Difficulty</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var gameScore in gameScores)
+            {
+                <tr>
+                    <td>@gameScore.Username</td>
+                    <td>@gameScore.CategoryName</td>
+                    <td>@gameScore.Difficulty</td>
+                    <td>@gameScore.Score</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private GameScore[] gameScores;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await TokenProvider.GetTokenAsync();
+        if (token != null)
+        {
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            gameScores = await Http.GetJsonAsync<GameScore[]>("https://localhost:44317/api/Statistics");
+        }
+    }
+}
