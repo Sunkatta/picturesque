@@ -1,4 +1,5 @@
 ﻿@page "/startgame"
+@inject TokenAuthenticationStateProvider tokenProvider
 @inherits StartGameComponent
 
 @if (gameOptions == null)
@@ -112,4 +113,15 @@ else
 
 @code {
     int tileNumber = 0;
+
+    protected async Task SendScore()
+    {
+        var context = await tokenProvider.GetAuthenticationStateAsync();
+        var userId = context.User.Claims.FirstOrDefault(c => c.Type.ToString() == "sub").Value;
+        GameScore gc = new GameScore(userId, game.CategoryId, game.Difficulty, score);
+
+        HttpClient client = new HttpClient();
+        await client.PostJsonAsync("https://localhost:44317/api/Statistics/CreateGameScore", gc);
+        await OnInitializedAsync();
+    }
 }

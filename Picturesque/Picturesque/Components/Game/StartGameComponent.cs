@@ -2,6 +2,7 @@
 using Picturesque.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
@@ -48,11 +49,6 @@ namespace Picturesque.Components
             gameHasStarted = true;
             SetCounter();
             StartCountdown();
-        }
-
-        protected async Task SendScore()
-        {
-
         }
 
         protected async Task ShowPicture(Picture picture)
