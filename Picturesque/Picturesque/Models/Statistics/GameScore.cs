@@ -22,7 +22,9 @@ namespace Picturesque.Models
         }
 
         public string UserId { get; set; }
+        public string Username { get; set; }
         public string CategoryId { get; set; }
+        public string CategoryName { get; set; }
         public int Difficulty { get; set; }
         public int Score { get; set; }
     }
