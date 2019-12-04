@@ -64,6 +64,7 @@ namespace Picturesque.Services
                 user = 
                     new LoginUserEntry 
                     {
+                        Id = rawUser.Id,
                         Email = rawUser.Email,
                         IsAdmin = rawUser.IsAdmin
                     };
@@ -78,7 +79,8 @@ namespace Picturesque.Services
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[] {
-                new Claim(ClaimTypes.Name, userInfo.Email),
+                new Claim(JwtRegisteredClaimNames.Sub, userInfo.Id),
+                new Claim(JwtRegisteredClaimNames.Email, userInfo.Email),
                 new Claim("is_admin", userInfo.IsAdmin.ToString())
             };
 
