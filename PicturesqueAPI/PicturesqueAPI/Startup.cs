@@ -73,6 +73,7 @@ namespace PicturesqueAPI
             services.AddScoped<IGameServiceManager, GameServiceManager>();
             services.AddScoped<ICategoryServiceManager, CategoryServiceManager>();
             services.AddScoped<IPictureServiceManager, PictureServiceManager>();
+            services.AddScoped<IStatisticsServiceManager, StatisticsServiceManager>();
 
             var mappingConfig = new MapperConfiguration(mc =>
             {

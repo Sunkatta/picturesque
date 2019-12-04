@@ -13,8 +13,4 @@
     <ProjectReference Include="..\Picturesque.Common\Picturesque.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Statistics\Interfaces\" />
-  </ItemGroup>
-
 </Project>
