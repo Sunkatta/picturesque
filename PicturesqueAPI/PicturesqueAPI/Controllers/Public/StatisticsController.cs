@@ -20,6 +20,19 @@ namespace PicturesqueAPI.Controllers.Public
             _statisticsServiceManager = statisticsServiceManager;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            try
+            {
+                return Ok(await _statisticsServiceManager.GetTop20PlayersAsync());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost("CreateGameScore")]
         public async Task<IActionResult> CreateGameScore([FromBody]CreateGameScoreEntry entry)
         {

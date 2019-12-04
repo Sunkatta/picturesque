@@ -8,5 +8,6 @@ namespace Picturesque.Domain
     public interface IStatisticsServiceManager
     {
         Task CreateGameScoreAsync(GameScore score);
+        Task<IEnumerable<GameScoreView>> GetTop20PlayersAsync();
     }
 }
