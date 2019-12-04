@@ -54,6 +54,16 @@ namespace Picturesque.Services
             return user != null ? user : null;
         }
 
+        public async Task<User> GetRawUserByIdAsync(string id)
+        {
+            User user =
+                await _ctx.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            return user != null ? user : null;
+        }
+
         private async Task<LoginUserEntry> AuthenticateUserAsync(LoginUserEntry login)
         {
             LoginUserEntry user = null;

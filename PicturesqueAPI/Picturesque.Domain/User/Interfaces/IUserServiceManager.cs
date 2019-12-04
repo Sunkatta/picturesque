@@ -11,5 +11,6 @@ namespace Picturesque.Domain
         Task CreateUserAsync(User user);
         Task<string> GenerateJWTAsync(LoginUserEntry login);
         Task<User> GetRawUserByEmailAsync(string email);
+        Task<User> GetRawUserByIdAsync(string id);
     }
 }

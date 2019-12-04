@@ -12,8 +12,6 @@ namespace Picturesque.Services
 {
     public sealed class GameServiceManager : IGameServiceManager
     {
-        private const int TIME_LIMIT = 10;
-        private const int NUMBER_OF_MISTAKES = 5;
         private static Random rand = new Random();
         private readonly ICategoryServiceManager _categoryManager;
 
