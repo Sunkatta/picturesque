@@ -9,10 +9,14 @@ namespace Picturesque.Components
     {
         public RegisterInputModel registerInputModel = new RegisterInputModel();
 
+        public bool hasSuccessfullyRegistered = false;
+
         protected async Task HandleRegister()
         {
             HttpClient client = new HttpClient();
             await client.PostJsonAsync("https://localhost:44317/api/Account/Register", registerInputModel);
+            hasSuccessfullyRegistered = true;
+            StateHasChanged();
         }
     }
 }

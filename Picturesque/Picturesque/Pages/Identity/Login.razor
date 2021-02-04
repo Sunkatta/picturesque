@@ -1,6 +1,7 @@
 ﻿@page  "/login"
-@inject HttpClient client
-@inject TokenAuthenticationStateProvider authStateProvider
+@inject HttpClient client;
+@inject TokenAuthenticationStateProvider authStateProvider;
+@inject NavigationManager UriHelper;
 
 <div class="login-register-holder">
     <div class="container">
@@ -31,12 +32,12 @@
 
     protected async Task HandleLogin()
     {
-        string token =
-            await client.PostJsonAsync<string>("https://localhost:44317/api/Account/Login", loginInputModel);
+        string token = await client.PostJsonAsync<string>("https://localhost:44317/api/Account/Login", loginInputModel);
 
         if (token != null)
         {
             await authStateProvider.SetTokenAsync(token);
+            UriHelper.NavigateTo("startgame");
         }
     }
 }

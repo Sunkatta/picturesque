@@ -1,36 +1,49 @@
 ﻿@page  "/register"
 @inherits RegisterComponent
+@inject NavigationManager UriHelper;
 
 <div class="login-register-holder">
     <div class="container">
-        <h3 class="text-center">Create an Account</h3>
-        <div class="form-holder">
-            <EditForm Model="@registerInputModel" OnValidSubmit="@HandleRegister">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
+        @if (hasSuccessfullyRegistered)
+        {
+            <h3 class="text-center">Account Successfully Created</h3>
+            <div class="text-center form-holder">
+                <button type="submit" class="btn btn-outline-success mt-2 w-100" @onclick="@((e) => UriHelper.NavigateTo("login"))">
+                    To Login
+                </button>
+            </div>
+        }
+        else
+        {
+            <h3 class="text-center">Create an Account</h3>
+            <div class="form-holder">
+                <EditForm Model="@registerInputModel" OnValidSubmit="@HandleRegister">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
 
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <InputText id="email" class="form-control" @bind-Value="registerInputModel.Email"></InputText>
-                </div>
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <InputText id="username" class="form-control" @bind-Value="registerInputModel.Username"></InputText>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control" name="password" @bind-value="registerInputModel.Password" />
-                </div>
-                <div class="form-group">
-                    <label for="confirmPass">Confirm Password</label>
-                    <input type="password" class="form-control" name="confirmPass" @bind-value="registerInputModel.ConfirmPassword" />
-                </div>
-                <div class="text-center">
-                    <button type="submit" class="btn btn-outline-success mt-2 w-100">Register</button>
-                </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <InputText id="email" class="form-control" @bind-Value="registerInputModel.Email"></InputText>
+                    </div>
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <InputText id="username" class="form-control" @bind-Value="registerInputModel.Username"></InputText>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" name="password" @bind-value="registerInputModel.Password" />
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPass">Confirm Password</label>
+                        <input type="password" class="form-control" name="confirmPass" @bind-value="registerInputModel.ConfirmPassword" />
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-outline-success mt-2 w-100">Register</button>
+                    </div>
 
-            </EditForm>
-        </div>
+                </EditForm>
+            </div>
+        }
     </div>
-    
+
 </div>
