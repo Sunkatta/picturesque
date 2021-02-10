@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Picturesque.Domain
+﻿namespace Picturesque.Domain
 {
     public sealed class GameScoreView
     {
@@ -20,8 +16,11 @@ namespace Picturesque.Domain
         }
 
         public string Username { get; set; }
+
         public Difficulty Difficulty { get; set; }
+        
         public string CategoryName { get; set; }
+        
         public int Score { get; set; }
     }
 }

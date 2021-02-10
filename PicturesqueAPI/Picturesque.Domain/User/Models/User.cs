@@ -1,7 +1,5 @@
 ﻿using Picturesque.Common;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Picturesque.Domain
 {
@@ -34,9 +32,13 @@ namespace Picturesque.Domain
         }
 
         public string Email { get; private set; }
+        
         public string Username { get; private set; }
+        
         public string Password { get; private set; }
+        
         public bool IsAdmin { get; set; }
+
         public bool IsBlocked { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Picturesque.Application;
@@ -18,11 +19,23 @@ namespace Picturesque.Services
     {
         private readonly PicturesqueDbContext _ctx;
         private readonly IConfiguration _config;
+        private readonly IMapper _mapper;
 
-        public UserServiceManager(PicturesqueDbContext ctx, IConfiguration config)
+        public UserServiceManager(PicturesqueDbContext ctx, IConfiguration config, IMapper mapper)
         {
             _ctx = ctx;
             _config = config;
+            _mapper = mapper;
+        }
+
+        public async Task<bool> BlockAsync(string id)
+        {
+            User user = await _ctx.Users.FirstOrDefaultAsync(u => u.Id == id);
+            user.IsBlocked = !user.IsBlocked;
+            _ctx.Update(user);
+            await _ctx.SaveChangesAsync();
+
+            return user.IsBlocked;
         }
 
         public async Task CreateUserAsync(User user)
@@ -42,6 +55,14 @@ namespace Picturesque.Services
             }
 
             return tokenString;
+        }
+
+        public async Task<IEnumerable<UserView>> GetAll()
+        {
+            List<User> rawUsers = await _ctx.Users.ToListAsync();
+            List<UserView> users = _mapper.Map<List<UserView>>(rawUsers);
+
+            return users;
         }
 
         public async Task<User> GetRawUserByEmailAsync(string email)
