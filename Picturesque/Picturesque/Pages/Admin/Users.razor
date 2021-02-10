@@ -1,0 +1,58 @@
+﻿@page "/users"
+@using System.Net.Http.Headers;
+@inject HttpClient Http
+@inject TokenAuthenticationStateProvider TokenProvider
+@attribute [Authorize]
+@inherits UserComponent;
+
+<h1>Users</h1>
+
+@if (users == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table mt-2">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Email</th>
+                <th>Username</th>
+                <th>Blocked</th>
+                <th>Admin</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td>@(counter++)</td>
+                    <td>@user.Email</td>
+                    <td>@user.Username</td>
+                    <td>@(user.IsBlocked ? "Yes" : "No")</td>
+                    <td>@(user.IsAdmin ? "Yes": "No")</td>
+                    <td>
+                        <button class="btn btn-outline-danger" @onclick="() => BlockUser(user.Id)">
+                            @(user.IsBlocked ? "Unblock" : "Block")
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await TokenProvider.GetTokenAsync();
+        if (token != null)
+        {
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await Http.GetJsonAsync<User[]>("https://localhost:44317/api/User");
+            users = response.ToList();
+        }
+    }
+}
