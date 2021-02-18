@@ -85,6 +85,13 @@ namespace Picturesque.Services
             return user != null ? user : null;
         }
 
+        public async Task<bool> IsBlocked(string email)
+        {
+            User user = await _ctx.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            return user.IsBlocked;
+        }
+
         private async Task<LoginUserEntry> AuthenticateUserAsync(LoginUserEntry login)
         {
             LoginUserEntry user = null;

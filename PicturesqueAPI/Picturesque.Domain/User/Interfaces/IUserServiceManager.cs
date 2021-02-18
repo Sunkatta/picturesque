@@ -19,5 +19,7 @@ namespace Picturesque.Domain
         Task<IEnumerable<UserView>> GetAll();
 
         Task<bool> BlockAsync(string id);
+
+        Task<bool> IsBlocked(string email);
     }
 }

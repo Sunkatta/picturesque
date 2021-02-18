@@ -49,6 +49,13 @@ namespace PicturesqueAPI.Controllers.Identity
         {
             try
             {
+                bool isBlocked = await _userManager.IsBlocked(login.Email);
+
+                if (isBlocked)
+                {
+                    return Forbid();
+                }
+
                 string token = await _userManager.GenerateJWTAsync(login);
 
                 if (string.IsNullOrEmpty(token))
