@@ -11,6 +11,8 @@
                 <DataAnnotationsValidator />
                 <ValidationSummary />
 
+                <p class="text-danger">@errorMessage</p>
+
                 <div class="form-group">
                     <label for="email">Email</label>
                     <InputText id="email" class="form-control" @bind-Value="loginInputModel.Email"></InputText>
@@ -29,15 +31,30 @@
 
 @code  {
     LoginInputModel loginInputModel = new LoginInputModel();
+    string token;
+    string errorMessage;
 
     protected async Task HandleLogin()
     {
-        string token = await client.PostJsonAsync<string>("https://localhost:44317/api/Account/Login", loginInputModel);
-
-        if (token != null)
+        try
         {
-            await authStateProvider.SetTokenAsync(token);
-            UriHelper.NavigateTo("startgame");
+            token = await client.PostJsonAsync<string>("https://localhost:44317/api/Account/Login", loginInputModel);
+
+            if (token != null)
+            {
+                await authStateProvider.SetTokenAsync(token);
+                UriHelper.NavigateTo("startgame");
+            }
         }
+        catch (Exception ex)
+        {
+            if (ex.Message.Contains("403"))
+            {
+                errorMessage = "Your account has been blocked";
+            }
+
+            StateHasChanged();
+        }
+
     }
 }
