@@ -8,7 +8,7 @@ namespace Picturesque.Domain
 {
     public interface IUserServiceManager
     {
-        Task CreateUserAsync(User user);
+        Task CreateUserAsync(User user, string password);
         
         Task<string> GenerateJWTAsync(LoginUserEntry login);
         

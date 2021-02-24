@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -20,12 +21,22 @@ namespace Picturesque.Services
         private readonly PicturesqueDbContext _ctx;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public UserServiceManager(PicturesqueDbContext ctx, IConfiguration config, IMapper mapper)
+        public UserServiceManager(
+            PicturesqueDbContext ctx,
+            IConfiguration config,
+            IMapper mapper,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager
+        )
         {
             _ctx = ctx;
             _config = config;
             _mapper = mapper;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         public async Task<bool> BlockAsync(string id)
@@ -38,20 +49,31 @@ namespace Picturesque.Services
             return user.IsBlocked;
         }
 
-        public async Task CreateUserAsync(User user)
+        public async Task CreateUserAsync(User user, string password)
         {
-            await _ctx.Users.AddAsync(user);
-            await _ctx.SaveChangesAsync();
+            await _userManager.CreateAsync(user, password);
         }
 
         public async Task<string> GenerateJWTAsync(LoginUserEntry login)
         {
-            LoginUserEntry user = await AuthenticateUserAsync(login);
+            User rawUser = await _userManager.FindByEmailAsync(login.Email);
             string tokenString = "";
 
-            if (user != null)
+            if (rawUser != null)
             {
-                tokenString = GenerateJSONWebToken(user);
+                var result = await _signInManager.PasswordSignInAsync(rawUser, login.Password, false, false);
+
+                if (result.Succeeded)
+                {
+                    LoginUserEntry user = new LoginUserEntry
+                    {
+                        Id = rawUser.Id,
+                        Email = rawUser.Email,
+                        IsAdmin = rawUser.IsAdmin
+                    };
+
+                    tokenString = GenerateJSONWebToken(user);
+                }
             }
 
             return tokenString;
@@ -97,7 +119,7 @@ namespace Picturesque.Services
             LoginUserEntry user = null;
             User rawUser = await _ctx.Users.FirstOrDefaultAsync(u => u.Email == login.Email);
 
-            if(rawUser != null && VerifyPassword(login.Password, rawUser.Password))
+            if(rawUser != null && VerifyPassword(login.Password, rawUser.PasswordHash))
             {
                 user = 
                     new LoginUserEntry 
