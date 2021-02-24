@@ -25,15 +25,14 @@ namespace PicturesqueAPI.Controllers.Identity
         {
             try
             {
-                User user =
-                    new User(
-                        entry.Email,
-                        entry.Username,
-                        entry.Password,
-                        false
-                        );
+                User user = new User()
+                {
+                    Email = entry.Email,
+                    UserName = entry.Username,
+                    IsAdmin = false,
+                };
 
-                await _userManager.CreateUserAsync(user);
+                await _userManager.CreateUserAsync(user, entry.Password);
             }
             catch (Exception ex)
             {
