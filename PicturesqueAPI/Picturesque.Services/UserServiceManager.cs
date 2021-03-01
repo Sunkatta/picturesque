@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -23,13 +24,15 @@ namespace Picturesque.Services
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly IEmailSender _emailService;
 
         public UserServiceManager(
             PicturesqueDbContext ctx,
             IConfiguration config,
             IMapper mapper,
             UserManager<User> userManager,
-            SignInManager<User> signInManager
+            SignInManager<User> signInManager,
+            IEmailSender emailService
         )
         {
             _ctx = ctx;
@@ -37,6 +40,7 @@ namespace Picturesque.Services
             _mapper = mapper;
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailService = emailService;
         }
 
         public async Task<bool> BlockAsync(string id)
@@ -49,9 +53,28 @@ namespace Picturesque.Services
             return user.IsBlocked;
         }
 
+        public async Task ConfirmEmailAsync(string email, string code)
+        {
+            User user = await _userManager.FindByEmailAsync(email);
+            string codeDecoded = Base64UrlEncoder.Decode(code);
+            var result = await _userManager.ConfirmEmailAsync(user, codeDecoded);
+
+            if (result.Succeeded)
+            {
+                var smth = "GG";
+            }
+            else
+            {
+                var smth1 = "You done fucced up";
+            }
+        }
+
         public async Task CreateUserAsync(User user, string password)
         {
             await _userManager.CreateAsync(user, password);
+            string code = Base64UrlEncoder.Encode(await _userManager.GenerateEmailConfirmationTokenAsync(user));
+            var confirmationLink = $"https://localhost:44317/api/Account/ConfirmEmail?email={user.Email}&emailConfirmationKey={code}";
+            await _emailService.SendEmailAsync(user.Email, "Confirm your Account", $"Confirm your email <a href='{confirmationLink}' target='_blanc'>HERE</a>, boyo");
         }
 
         public async Task<string> GenerateJWTAsync(LoginUserEntry login)

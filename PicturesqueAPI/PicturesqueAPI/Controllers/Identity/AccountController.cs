@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Picturesque.Application;
 using Picturesque.Domain;
 
@@ -69,6 +68,21 @@ namespace PicturesqueAPI.Controllers.Identity
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail(string email, string emailConfirmationKey)
+        {
+            try
+            {
+                await _userManager.ConfirmEmailAsync(email, emailConfirmationKey);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+                throw;
             }
         }
     }
