@@ -4,12 +4,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Picturesque.Application.SendGrid;
 using Picturesque.DB;
 using Picturesque.Domain;
 using Picturesque.Services;
@@ -33,7 +35,8 @@ namespace PicturesqueAPI
                     Configuration.GetConnectionString("dbconn")));
 
             services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<PicturesqueDbContext>();
+                .AddEntityFrameworkStores<PicturesqueDbContext>()
+                .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
 
             services.AddCors(options =>
             {
@@ -70,6 +73,9 @@ namespace PicturesqueAPI
             services.AddScoped<ICategoryServiceManager, CategoryServiceManager>();
             services.AddScoped<IPictureServiceManager, PictureServiceManager>();
             services.AddScoped<IStatisticsServiceManager, StatisticsServiceManager>();
+
+            services.AddTransient<IEmailSender, EmailServiceManager>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);
 
             var mappingConfig = new MapperConfiguration(mc =>
             {
