@@ -53,27 +53,20 @@ namespace Picturesque.Services
             return user.IsBlocked;
         }
 
-        public async Task ConfirmEmailAsync(string email, string code)
+        public async Task<bool> ConfirmEmailAsync(string email, string code)
         {
             User user = await _userManager.FindByEmailAsync(email);
             string codeDecoded = Base64UrlEncoder.Decode(code);
             var result = await _userManager.ConfirmEmailAsync(user, codeDecoded);
 
-            if (result.Succeeded)
-            {
-                var smth = "GG";
-            }
-            else
-            {
-                var smth1 = "You done fucced up";
-            }
+            return result.Succeeded;
         }
 
         public async Task CreateUserAsync(User user, string password)
         {
             await _userManager.CreateAsync(user, password);
             string code = Base64UrlEncoder.Encode(await _userManager.GenerateEmailConfirmationTokenAsync(user));
-            var confirmationLink = $"https://localhost:44317/api/Account/ConfirmEmail?email={user.Email}&emailConfirmationKey={code}";
+            var confirmationLink = $"http://localhost:62455/Account/ConfirmEmail?email={user.Email}&emailConfirmationKey={code}";
             await _emailService.SendEmailAsync(user.Email, "Confirm your Account", $"Confirm your email <a href='{confirmationLink}' target='_blanc'>HERE</a>, boyo");
         }
 

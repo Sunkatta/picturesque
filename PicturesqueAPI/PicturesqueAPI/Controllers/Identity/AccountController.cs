@@ -76,8 +76,8 @@ namespace PicturesqueAPI.Controllers.Identity
         {
             try
             {
-                await _userManager.ConfirmEmailAsync(email, emailConfirmationKey);
-                return Ok();
+                bool isEmailSuccessfullyConfirmed = await _userManager.ConfirmEmailAsync(email, emailConfirmationKey);
+                return Ok(isEmailSuccessfullyConfirmed);
             }
             catch (Exception ex)
             {

@@ -22,6 +22,6 @@ namespace Picturesque.Domain
 
         Task<bool> IsBlocked(string email);
 
-        Task ConfirmEmailAsync(string email, string code);
+        Task<bool> ConfirmEmailAsync(string email, string code);
     }
 }
