@@ -1,0 +1,41 @@
+﻿@page "/Account/ConfirmEmail";
+@inherits ConfirmEmailComponent;
+@using Microsoft.AspNetCore.WebUtilities;
+@inject NavigationManager NavigationManager
+@inject HttpClient client;
+
+<h3>ConfirmEmail</h3>
+@if (!isEmailConfirmed)
+{
+    <p>Please wait...</p>
+}
+else
+{
+    <p>Email successfully confirmed!</p>
+}
+
+@code {
+    bool isEmailConfirmed = false;
+
+    protected override async void OnInitialized()
+    {
+
+        var query = new Uri(NavigationManager.Uri).Query;
+
+        if (QueryHelpers.ParseQuery(query).TryGetValue("email", out var email))
+        {
+            Email = email;
+        }
+
+        if (QueryHelpers.ParseQuery(query).TryGetValue("emailConfirmationKey", out var emailConfirmationKey))
+        {
+            ConfirmationCode = emailConfirmationKey;
+        }
+
+        if (!string.IsNullOrEmpty(Email) && !string.IsNullOrEmpty(ConfirmationCode))
+        {
+            isEmailConfirmed = await client.GetJsonAsync<bool>($"https://localhost:44317/api/Account/ConfirmEmail?email={Email}&emailConfirmationKey={ConfirmationCode}");
+            StateHasChanged();
+        }
+    }
+}
