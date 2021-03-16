@@ -6,8 +6,11 @@
     <div class="container">
         @if (hasSuccessfullyRegistered)
         {
-            <h3 class="text-center">Account Successfully Created</h3>
-            <div class="text-center form-holder">
+            <h3 class="text-center">Account Successfully Created!</h3>
+            <div class="text-center form-holder w-50">
+                <h4>A confirmation email has been sent to</h4>
+                <br />
+                <h4>@registerInputModel.Email</h4>
                 <button type="submit" class="btn btn-outline-success mt-2 w-100" @onclick="@((e) => UriHelper.NavigateTo("login"))">
                     To Login
                 </button>
@@ -20,6 +23,8 @@
                 <EditForm Model="@registerInputModel" OnValidSubmit="@HandleRegister">
                     <DataAnnotationsValidator />
                     <ValidationSummary />
+
+                    <p class="text-danger text-center">@errorMessage</p>
 
                     <div class="form-group">
                         <label for="email">Email</label>
