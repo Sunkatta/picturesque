@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -53,6 +52,20 @@ namespace Picturesque.Services
             return user.IsBlocked;
         }
 
+        public async Task<bool> CheckIfUserExistsByEmail(string email)
+        {
+            User user = await _userManager.FindByEmailAsync(email);
+
+            return user != null;
+        }
+
+        public async Task<bool> CheckIfUserExistsByUsername(string username)
+        {
+            User user = await _userManager.FindByNameAsync(username);
+
+            return user != null;
+        }
+
         public async Task<bool> ConfirmEmailAsync(string email, string code)
         {
             User user = await _userManager.FindByEmailAsync(email);
@@ -67,7 +80,7 @@ namespace Picturesque.Services
             await _userManager.CreateAsync(user, password);
             string code = Base64UrlEncoder.Encode(await _userManager.GenerateEmailConfirmationTokenAsync(user));
             var confirmationLink = $"http://localhost:62455/Account/ConfirmEmail?email={user.Email}&emailConfirmationKey={code}";
-            await _emailService.SendEmailAsync(user.Email, "Confirm your Account", $"Confirm your email <a href='{confirmationLink}' target='_blanc'>HERE</a>, boyo");
+            // await _emailService.SendEmailAsync(user.Email, "Confirm your Account", $"Confirm your email <a href='{confirmationLink}' target='_blanc'>HERE</a>, boyo");
         }
 
         public async Task<string> GenerateJWTAsync(LoginUserEntry login)
@@ -130,25 +143,6 @@ namespace Picturesque.Services
             return user.IsBlocked;
         }
 
-        private async Task<LoginUserEntry> AuthenticateUserAsync(LoginUserEntry login)
-        {
-            LoginUserEntry user = null;
-            User rawUser = await _ctx.Users.FirstOrDefaultAsync(u => u.Email == login.Email);
-
-            if(rawUser != null && VerifyPassword(login.Password, rawUser.PasswordHash))
-            {
-                user = 
-                    new LoginUserEntry 
-                    {
-                        Id = rawUser.Id,
-                        Email = rawUser.Email,
-                        IsAdmin = rawUser.IsAdmin
-                    };
-            }
-            
-            return user;
-        }
-
         private string GenerateJSONWebToken(LoginUserEntry userInfo)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
@@ -167,31 +161,6 @@ namespace Picturesque.Services
               signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
-        private bool VerifyPassword(string plainPassword, string passwordHash)
-        {
-            /* Fetch the stored value & Extract the bytes */
-            byte[] hashBytes = Convert.FromBase64String(passwordHash);
-
-            /* Get the salt */
-            byte[] salt = new byte[16];
-
-            Array.Copy(hashBytes, 0, salt, 0, 16);
-
-            /* Compute the hash on the password the user entered */
-            var pbkdf2 = new Rfc2898DeriveBytes(plainPassword, salt, 10000);
-            byte[] hash = pbkdf2.GetBytes(20);
-
-            /* Compare the results */
-            for (int i = 0; i < 20; i++)
-            {
-                if (hashBytes[i + 16] != hash[i])
-                {
-                    return false;
-                }
-            }
-            return true;
         }
     }
 }

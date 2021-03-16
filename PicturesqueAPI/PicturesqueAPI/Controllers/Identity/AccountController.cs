@@ -24,6 +24,20 @@ namespace PicturesqueAPI.Controllers.Identity
         {
             try
             {
+                bool isEmailAlreadyTaken = await _userManager.CheckIfUserExistsByEmail(entry.Email);
+
+                if (isEmailAlreadyTaken)
+                {
+                    return BadRequest("Account with this email already exists!");
+                }
+
+                bool isUsernameAlreadyTaken = await _userManager.CheckIfUserExistsByUsername(entry.Username);
+
+                if (isUsernameAlreadyTaken)
+                {
+                    return BadRequest("Account with this username already exists!");
+                }
+
                 User user = new User()
                 {
                     Email = entry.Email,

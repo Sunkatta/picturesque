@@ -23,5 +23,9 @@ namespace Picturesque.Domain
         Task<bool> IsBlocked(string email);
 
         Task<bool> ConfirmEmailAsync(string email, string code);
+
+        Task<bool> CheckIfUserExistsByEmail(string email);
+
+        Task<bool> CheckIfUserExistsByUsername(string username);
     }
 }
