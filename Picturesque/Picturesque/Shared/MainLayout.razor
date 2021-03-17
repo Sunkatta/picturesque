@@ -13,7 +13,7 @@
             <AuthorizeView>
                 <Authorized>
                     <li class="nav-item px-3">
-                        Logged in as @context.User.Claims.FirstOrDefault(c => c.Type.ToString() == "email").Value
+                        Hello, @context.User.Claims.FirstOrDefault(c => c.Type.ToString() == "unique_name").Value!
                     </li>
                     <li class="nav-item px-3">
                         <button 

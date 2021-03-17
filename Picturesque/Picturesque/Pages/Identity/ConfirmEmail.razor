@@ -3,23 +3,36 @@
 @using Microsoft.AspNetCore.WebUtilities;
 @inject NavigationManager NavigationManager
 @inject HttpClient client;
+@inject NavigationManager UriHelper;
 
-<h3>ConfirmEmail</h3>
-@if (!isEmailConfirmed)
-{
-    <p>Please wait...</p>
-}
-else
-{
-    <p>Email successfully confirmed!</p>
-}
+<div class="text-center form-holder w-50">
+    @if (loading)
+    {
+        <p>Please wait...</p>
+    }
+    else
+    {
+        @if (isEmailConfirmed)
+        {
+            <h3>Email successfully confirmed!</h3>
+        }
+        else
+        {
+            <h3>The confirmation link is either invalid or has expired!</h3>
+        }
+        <button type="submit" class="btn btn-outline-success mt-2 w-100" @onclick="@((e) => UriHelper.NavigateTo("login"))">
+            To Login
+        </button>
+    }
+</div>
 
 @code {
     bool isEmailConfirmed = false;
+    bool loading = false;
 
     protected override async void OnInitialized()
     {
-
+        loading = true;
         var query = new Uri(NavigationManager.Uri).Query;
 
         if (QueryHelpers.ParseQuery(query).TryGetValue("email", out var email))
@@ -35,7 +48,9 @@ else
         if (!string.IsNullOrEmpty(Email) && !string.IsNullOrEmpty(ConfirmationCode))
         {
             isEmailConfirmed = await client.GetJsonAsync<bool>($"https://localhost:44317/api/Account/ConfirmEmail?email={Email}&emailConfirmationKey={ConfirmationCode}");
-            StateHasChanged();
         }
+
+        loading = false;
+        StateHasChanged();
     }
 }
