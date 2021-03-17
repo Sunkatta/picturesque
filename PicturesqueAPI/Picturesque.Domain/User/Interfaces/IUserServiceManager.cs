@@ -27,5 +27,7 @@ namespace Picturesque.Domain
         Task<bool> CheckIfUserExistsByEmail(string email);
 
         Task<bool> CheckIfUserExistsByUsername(string username);
+
+        Task<bool> IsEmailConfiemd(string email);
     }
 }

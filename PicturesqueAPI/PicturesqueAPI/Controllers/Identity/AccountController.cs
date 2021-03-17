@@ -61,6 +61,13 @@ namespace PicturesqueAPI.Controllers.Identity
         {
             try
             {
+                string token = await _userManager.GenerateJWTAsync(login);
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized();
+                }
+
                 bool isBlocked = await _userManager.IsBlocked(login.Email);
 
                 if (isBlocked)
@@ -68,16 +75,14 @@ namespace PicturesqueAPI.Controllers.Identity
                     return Forbid();
                 }
 
-                string token = await _userManager.GenerateJWTAsync(login);
+                bool isEmailConfirmed = await _userManager.IsEmailConfiemd(login.Email);
 
-                if (string.IsNullOrEmpty(token))
+                if (!isEmailConfirmed)
                 {
-                    return Unauthorized();
+                    return BadRequest();
                 }
-                else
-                {
-                    return Ok(token);
-                }
+
+                return Ok(token);
             }
             catch (Exception ex)
             {

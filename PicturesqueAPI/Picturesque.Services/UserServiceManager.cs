@@ -80,7 +80,7 @@ namespace Picturesque.Services
             await _userManager.CreateAsync(user, password);
             string code = Base64UrlEncoder.Encode(await _userManager.GenerateEmailConfirmationTokenAsync(user));
             var confirmationLink = $"http://localhost:62455/Account/ConfirmEmail?email={user.Email}&emailConfirmationKey={code}";
-            // await _emailService.SendEmailAsync(user.Email, "Confirm your Account", $"Confirm your email <a href='{confirmationLink}' target='_blanc'>HERE</a>, boyo");
+            await _emailService.SendEmailAsync(user.Email, "Confirm your Account", $"Confirm your email <a href='{confirmationLink}' target='_blanc'>HERE</a>, boyo");
         }
 
         public async Task<string> GenerateJWTAsync(LoginUserEntry login)
@@ -98,7 +98,8 @@ namespace Picturesque.Services
                     {
                         Id = rawUser.Id,
                         Email = rawUser.Email,
-                        IsAdmin = rawUser.IsAdmin
+                        IsAdmin = rawUser.IsAdmin,
+                        Username = rawUser.UserName,
                     };
 
                     tokenString = GenerateJSONWebToken(user);
@@ -140,7 +141,13 @@ namespace Picturesque.Services
         {
             User user = await _ctx.Users.FirstOrDefaultAsync(u => u.Email == email);
 
-            return user.IsBlocked;
+            return user != null ? user.IsBlocked : false;
+        }
+
+        public async Task<bool> IsEmailConfiemd(string email)
+        {
+            User user = await _userManager.FindByEmailAsync(email);
+            return user != null ? await _userManager.IsEmailConfirmedAsync(user) : false;
         }
 
         private string GenerateJSONWebToken(LoginUserEntry userInfo)
@@ -151,6 +158,7 @@ namespace Picturesque.Services
             var claims = new[] {
                 new Claim(JwtRegisteredClaimNames.Sub, userInfo.Id),
                 new Claim(JwtRegisteredClaimNames.Email, userInfo.Email),
+                new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.Username),
                 new Claim("is_admin", userInfo.IsAdmin.ToString())
             };
 
