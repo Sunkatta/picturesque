@@ -1,78 +1,80 @@
 ﻿@page "/categories"
 @using System.Net.Http.Headers;
-@inject HttpClient Http
-@inject TokenAuthenticationStateProvider TokenProvider
+@inject HttpClient Http;
+@inject TokenAuthenticationStateProvider TokenProvider;
+@inject NavigationManager UriHelper;
 @attribute [Authorize]
 
-<h1>Categories</h1>
+<AuthorizeView Context="AuthorizeContext">
+    <h1>Categories</h1>
 
-@if (categories == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <div class="row justify-content-end mr-3 mt-4">
-        <button class="btn btn-primary"
-                @onclick="OnAddCategory">
-            Add new category
-        </button>
-    </div>
-    @if (addingCategory)
+    @if (categories == null)
     {
-        <EditForm Model="category" OnValidSubmit="AddCategory">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
-
-            <div class="form-group">
-                <label for="name">Category Name</label>
-                <InputText id="name" class="form-control" @bind-Value="category.Name"></InputText>
-            </div>
-            <button type="submit" class="btn btn-outline-success mt-2 w-100">Create Category</button>
-        </EditForm>
+        <p><em>Loading...</em></p>
     }
-    @if (editingCategory)
+    else
     {
-        <EditForm Model="category" OnValidSubmit="EditCategory">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
+        <div class="row justify-content-end mr-3 mt-4">
+            <button class="btn btn-primary"
+                    @onclick="OnAddCategory">
+                Add new category
+            </button>
+        </div>
+        @if (addingCategory)
+        {
+            <EditForm Model="category" OnValidSubmit="AddCategory">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
 
-            <div class="form-group">
-                <label for="name">Category Name</label>
-                <InputText id="name" class="form-control" @bind-Value="category.Name"></InputText>
-            </div>
-            <button type="submit" class="btn btn-outline-success mt-2 w-100">Edit Category</button>
-        </EditForm>
-    }
-    <table class="table mt-2">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var category in categories)
-            {
+                <div class="form-group">
+                    <label for="name">Category Name</label>
+                    <InputText id="name" class="form-control" @bind-Value="category.Name"></InputText>
+                </div>
+                <button type="submit" class="btn btn-outline-success mt-2 w-100">Create Category</button>
+            </EditForm>
+        }
+        @if (editingCategory)
+        {
+            <EditForm Model="category" OnValidSubmit="EditCategory">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="form-group">
+                    <label for="name">Category Name</label>
+                    <InputText id="name" class="form-control" @bind-Value="category.Name"></InputText>
+                </div>
+                <button type="submit" class="btn btn-outline-success mt-2 w-100">Edit Category</button>
+            </EditForm>
+        }
+        <table class="table mt-2">
+            <thead>
                 <tr>
-                    <td>@category.Id</td>
-                    <td>@category.Name</td>
-                    <td>
-                        <button class="btn btn-primary" @onclick="() => OnEditCategory(category.Id)">Edit</button>
-                    </td>
-                    <td>
-                        <button 
-                                class="btn btn-outline-danger"
-                                @onclick="() => DeleteCategory(category.Id)">
-                            Delete
-                        </button>
-                    </td>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-}
+            </thead>
+            <tbody>
+                @foreach (var category in categories)
+                {
+                    <tr>
+                        <td>@category.Id</td>
+                        <td>@category.Name</td>
+                        <td>
+                            <button class="btn btn-primary" @onclick="() => OnEditCategory(category.Id)">Edit</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-danger"
+                                    @onclick="() => DeleteCategory(category.Id)">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</AuthorizeView>
 
 @code {
     private Category[] categories;
@@ -83,10 +85,15 @@ else
     protected override async Task OnInitializedAsync()
     {
         var token = await TokenProvider.GetTokenAsync();
-        if (token != null)
+        var isAdmin = (await TokenProvider.GetAuthenticationStateAsync()).User.Claims.FirstOrDefault(c => c.Type.ToString() == "is_admin").Value == "True";
+        if (token != null && isAdmin)
         {
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             categories = await Http.GetJsonAsync<Category[]>("https://localhost:44317/api/Category");
+        }
+        else
+        {
+            UriHelper.NavigateTo("startgame");
         }
     }
 
