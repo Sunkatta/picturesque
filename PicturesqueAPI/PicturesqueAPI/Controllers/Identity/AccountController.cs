@@ -101,7 +101,20 @@ namespace PicturesqueAPI.Controllers.Identity
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-                throw;
+            }
+        }
+
+        [HttpPost("ResendConfirmationEmail")]
+        public async Task<IActionResult> ResendConfirmationEmail([FromBody] EmailEntry entry)
+        {
+            try
+            {
+                await _userManager.ResendConfirmationEmail(entry.Email);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }

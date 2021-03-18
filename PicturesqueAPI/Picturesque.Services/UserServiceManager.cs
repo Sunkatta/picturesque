@@ -78,9 +78,7 @@ namespace Picturesque.Services
         public async Task CreateUserAsync(User user, string password)
         {
             await _userManager.CreateAsync(user, password);
-            string code = Base64UrlEncoder.Encode(await _userManager.GenerateEmailConfirmationTokenAsync(user));
-            var confirmationLink = $"http://localhost:62455/Account/ConfirmEmail?email={user.Email}&emailConfirmationKey={code}";
-            await _emailService.SendEmailAsync(user.Email, "Confirm your Account", $"Confirm your email <a href='{confirmationLink}' target='_blanc'>HERE</a>, boyo");
+            await SendConfirmationEmail(user);
         }
 
         public async Task<string> GenerateJWTAsync(LoginUserEntry login)
@@ -150,6 +148,17 @@ namespace Picturesque.Services
             return user != null ? await _userManager.IsEmailConfirmedAsync(user) : false;
         }
 
+        public async Task ResendConfirmationEmail(string email)
+        {
+            User user = await _userManager.FindByEmailAsync(email);
+            bool isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+
+            if (user != null && !isEmailConfirmed)
+            {
+                await SendConfirmationEmail(user);
+            }
+        }
+
         private string GenerateJSONWebToken(LoginUserEntry userInfo)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
@@ -169,6 +178,13 @@ namespace Picturesque.Services
               signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private async Task SendConfirmationEmail(User user)
+        {
+            string code = Base64UrlEncoder.Encode(await _userManager.GenerateEmailConfirmationTokenAsync(user));
+            var confirmationLink = $"http://localhost:62455/Account/ConfirmEmail?email={user.Email}&emailConfirmationKey={code}";
+            await _emailService.SendEmailAsync(user.Email, "Confirm your Account", $"We are thrilled to see you on board! Please, click <a href='{confirmationLink}' target='_blanc'>HERE</a> to confirm your account. <br /> Cheers!");
         }
     }
 }
