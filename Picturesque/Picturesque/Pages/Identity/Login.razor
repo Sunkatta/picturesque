@@ -67,7 +67,7 @@
 
             if (ex.Message.Contains("400"))
             {
-                errorMessage = $"We found an account with this email but it has not been confirmed yet. Click <a href=\"Account/ResendEmail\">here</a> to send a confirmation email to <b>{loginInputModel.Email}</b>.";
+                errorMessage = $"We found an account with this email but it has not been confirmed yet. Click <a href=\"Account/ResendEmail\">here</a> to resend a confirmation email to <b>{loginInputModel.Email}</b>.";
             }
 
             if (ex.Message.Contains("401"))
