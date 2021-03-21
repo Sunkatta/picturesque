@@ -3,7 +3,6 @@
 @using Microsoft.AspNetCore.WebUtilities;
 @inject NavigationManager NavigationManager
 @inject HttpClient client;
-@inject NavigationManager UriHelper;
 
 <div class="text-center form-holder w-50">
     @if (loading)
@@ -20,7 +19,7 @@
         {
             <h3>The confirmation link is either invalid or has expired!</h3>
         }
-        <button type="submit" class="btn btn-outline-success mt-2 w-100" @onclick="@((e) => UriHelper.NavigateTo("login"))">
+        <button type="submit" class="btn btn-outline-success mt-2 w-100" @onclick="@((e) => NavigationManager.NavigateTo("login"))">
             To Login
         </button>
     }
