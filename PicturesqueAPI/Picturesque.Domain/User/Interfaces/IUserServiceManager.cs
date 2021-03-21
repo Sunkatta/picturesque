@@ -1,7 +1,5 @@
 ﻿using Picturesque.Application;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Picturesque.Domain
@@ -31,5 +29,9 @@ namespace Picturesque.Domain
         Task<bool> IsEmailConfiemd(string email);
 
         Task ResendConfirmationEmail(string email);
+
+        Task ForgotPassword(string email);
+
+        Task<bool> ResetPassword(string email, string newPassword, string code);
     }
 }

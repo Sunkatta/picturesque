@@ -117,5 +117,33 @@ namespace PicturesqueAPI.Controllers.Identity
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword([FromBody] EmailEntry entry)
+        {
+            try
+            {
+                await _userManager.ForgotPassword(entry.Email);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordEntry entry)
+        {
+            try
+            {
+                bool isPasswordReset = await _userManager.ResetPassword(entry.Email, entry.Password, entry.PasswordResetCode);
+                return Ok(isPasswordReset);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

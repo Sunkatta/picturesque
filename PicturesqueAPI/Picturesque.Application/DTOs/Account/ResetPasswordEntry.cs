@@ -2,16 +2,16 @@
 
 namespace Picturesque.Application
 {
-    public sealed class RegisterUserEntry
+    public class ResetPasswordEntry
     {
         [Required]
-        public string Username { get; set; }
-
-
         [EmailAddress]
         public string Email { get; set; }
 
+        [Required]
         [MinLength(5)]
         public string Password { get; set; }
+
+        public string PasswordResetCode { get; set; }
     }
 }

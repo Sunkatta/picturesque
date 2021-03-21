@@ -81,6 +81,16 @@ namespace Picturesque.Services
             await SendConfirmationEmail(user);
         }
 
+        public async Task ForgotPassword(string email)
+        {
+            User user = await _userManager.FindByEmailAsync(email);
+
+            if (user != null)
+            {
+                await SendForgotPasswordEmail(user);
+            }
+        }
+
         public async Task<string> GenerateJWTAsync(LoginUserEntry login)
         {
             User rawUser = await _userManager.FindByEmailAsync(login.Email);
@@ -159,6 +169,21 @@ namespace Picturesque.Services
             }
         }
 
+        public async Task<bool> ResetPassword(string email, string newPassword, string code)
+        {
+            User user = await _userManager.FindByEmailAsync(email);
+
+            if (user != null)
+            {
+                string codeDecoded = Base64UrlEncoder.Decode(code);
+                var result = await _userManager.ResetPasswordAsync(user, codeDecoded, newPassword);
+
+                return result.Succeeded;
+            }
+
+            return false;
+        }
+
         private string GenerateJSONWebToken(LoginUserEntry userInfo)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
@@ -185,6 +210,13 @@ namespace Picturesque.Services
             string code = Base64UrlEncoder.Encode(await _userManager.GenerateEmailConfirmationTokenAsync(user));
             var confirmationLink = $"http://localhost:62455/Account/ConfirmEmail?email={user.Email}&emailConfirmationKey={code}";
             await _emailService.SendEmailAsync(user.Email, "Confirm your Account", $"We are thrilled to see you on board! Please, click <a href='{confirmationLink}' target='_blanc'>HERE</a> to confirm your account. <br /> Cheers!");
+        }
+
+        private async Task SendForgotPasswordEmail(User user)
+        {
+            string code = Base64UrlEncoder.Encode(await _userManager.GeneratePasswordResetTokenAsync(user));
+            var confirmationLink = $"http://localhost:62455/Account/ResetPassword?email={user.Email}&passwordResetKey={code}";
+            await _emailService.SendEmailAsync(user.Email, "Reset Password", $"Please, click <a href='{confirmationLink}' target='_blanc'>HERE</a> to reset your password. <br /> Cheers!");
         }
     }
 }
