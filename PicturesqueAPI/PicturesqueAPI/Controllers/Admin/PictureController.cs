@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Picturesque.Application;
@@ -12,6 +12,7 @@ namespace PicturesqueAPI.Controllers.Admin
     [ApiController]
     [Route("api/[controller]")]
     [Produces("application/json")]
+    [Authorize(Policy = "Admin")]
     public class PictureController : Controller
     {
         private readonly IPictureServiceManager _pictureServiceManager;

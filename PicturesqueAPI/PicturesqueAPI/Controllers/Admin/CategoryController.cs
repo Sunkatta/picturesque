@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Picturesque.Application;
 using Picturesque.Common;
@@ -10,6 +11,7 @@ namespace PicturesqueAPI.Controllers.Admin
     [ApiController]
     [Route("api/[controller]")]
     [Produces("application/json")]
+    [Authorize(Policy = "Admin")]
     public class CategoryController : Controller
     {
         private readonly ICategoryServiceManager _categoryManager;

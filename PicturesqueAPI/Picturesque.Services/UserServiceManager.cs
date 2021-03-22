@@ -193,7 +193,8 @@ namespace Picturesque.Services
                 new Claim(JwtRegisteredClaimNames.Sub, userInfo.Id),
                 new Claim(JwtRegisteredClaimNames.Email, userInfo.Email),
                 new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.Username),
-                new Claim("is_admin", userInfo.IsAdmin.ToString())
+                // TODO: This is a hack. Research ASPNetRoles
+                userInfo.IsAdmin ? new Claim("is_admin", true.ToString()) : new Claim("user", true.ToString()),
             };
 
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],
