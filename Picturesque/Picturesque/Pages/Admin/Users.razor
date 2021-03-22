@@ -1,7 +1,8 @@
 ﻿@page "/users"
 @using System.Net.Http.Headers;
-@inject HttpClient Http
-@inject TokenAuthenticationStateProvider TokenProvider
+@inject HttpClient Http;
+@inject TokenAuthenticationStateProvider TokenProvider;
+@inject NavigationManager UriHelper;
 @attribute [Authorize]
 @inherits UserComponent;
 
@@ -48,11 +49,20 @@ else
     protected override async Task OnInitializedAsync()
     {
         var token = await TokenProvider.GetTokenAsync();
-        if (token != null)
+        var isAdmin = (await TokenProvider.GetAuthenticationStateAsync())
+            .User
+            .Claims
+            .FirstOrDefault(c => c.Type.ToString() == "is_admin")?.Value == "True";
+
+        if (token != null && isAdmin)
         {
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await Http.GetJsonAsync<User[]>("https://localhost:44317/api/User");
             users = response.ToList();
+        }
+        else
+        {
+            UriHelper.NavigateTo("startgame");
         }
     }
 }

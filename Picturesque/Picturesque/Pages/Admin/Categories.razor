@@ -85,7 +85,11 @@
     protected override async Task OnInitializedAsync()
     {
         var token = await TokenProvider.GetTokenAsync();
-        var isAdmin = (await TokenProvider.GetAuthenticationStateAsync()).User.Claims.FirstOrDefault(c => c.Type.ToString() == "is_admin").Value == "True";
+        var isAdmin = (await TokenProvider.GetAuthenticationStateAsync())
+            .User
+            .Claims
+            .FirstOrDefault(c => c.Type.ToString() == "is_admin")?.Value == "True";
+
         if (token != null && isAdmin)
         {
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);

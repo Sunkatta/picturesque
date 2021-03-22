@@ -1,8 +1,9 @@
 ﻿@page "/pictures"
 @using System.Net.Http.Headers;
-@inject HttpClient Http
-@inject TokenAuthenticationStateProvider TokenProvider
-@inject IFileReaderService fileReaderService
+@inject HttpClient Http;
+@inject TokenAuthenticationStateProvider TokenProvider;
+@inject NavigationManager UriHelper;
+@inject IFileReaderService fileReaderService;
 @attribute [Authorize]
 
 <h3>Pictures</h3>
@@ -32,22 +33,22 @@ else
             <DataAnnotationsValidator />
             <ValidationSummary />
 
-                <div class="form-group">
-                    <label>Select Category</label>
-                    <InputSelect class="form-control" @bind-Value="picture.CategoryId">
-                        <option value="" selected>--</option>
-                        @foreach (var category in categories)
-                                {
-                            <option value="@category.Id">@category.Name</option>
-                                }
-                        /**/
-                        /**/
-                        /**/
-                    </InputSelect>
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-outline-success w-100">Add Category</button>
-                </div>
+            <div class="form-group">
+                <label>Select Category</label>
+                <InputSelect class="form-control" @bind-Value="picture.CategoryId">
+                    <option value="" selected>--</option>
+                    @foreach (var category in categories)
+                            {
+                        <option value="@category.Id">@category.Name</option>
+                            }
+                    /**/
+                    /**/
+                    /**/
+                </InputSelect>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-outline-success w-100">Add Category</button>
+            </div>
         </EditForm>
     }
     <div class="row mt-2">
@@ -82,11 +83,20 @@ else
     protected override async Task OnInitializedAsync()
     {
         var token = await TokenProvider.GetTokenAsync();
-        if (token != null)
+        var isAdmin = (await TokenProvider.GetAuthenticationStateAsync())
+            .User
+            .Claims
+            .FirstOrDefault(c => c.Type.ToString() == "is_admin")?.Value == "True";
+
+        if (token != null && isAdmin)
         {
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             pictures = await Http.GetJsonAsync<Picture[]>("https://localhost:44317/api/Picture");
             categories = await Http.GetJsonAsync<Category[]>("https://localhost:44317/api/Category");
+        }
+        else
+        {
+            UriHelper.NavigateTo("startgame");
         }
     }
 
