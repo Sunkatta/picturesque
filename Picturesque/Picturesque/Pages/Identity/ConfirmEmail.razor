@@ -1,5 +1,4 @@
 ﻿@page "/Account/ConfirmEmail";
-@inherits ConfirmEmailComponent;
 @using Microsoft.AspNetCore.WebUtilities;
 @inject NavigationManager NavigationManager
 @inject HttpClient client;
@@ -26,6 +25,12 @@
 </div>
 
 @code {
+    [Parameter]
+    public string Email { get; set; }
+
+    [Parameter]
+    public string ConfirmationCode { get; set; }
+
     bool isEmailConfirmed = false;
     bool loading = false;
 
