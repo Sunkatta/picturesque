@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Picturesque.DB;
 using Picturesque.Domain;
-using System;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.Processing;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Picturesque.Services
@@ -95,11 +95,10 @@ namespace Picturesque.Services
             {
                 if (file.Length > 0)
                 {
-                    using (var ms = new MemoryStream())
+                    using (var image = Image.Load(file.OpenReadStream()))
                     {
-                        file.CopyTo(ms);
-                        var fileBytes = ms.ToArray();
-                        string img2Base64 = "data:image/jpeg;base64," + Convert.ToBase64String(fileBytes);
+                        image.Mutate(x => x.Resize(256, 256));
+                        string img2Base64 = image.ToBase64String(PngFormat.Instance);
                         Picture picture = new Picture(img2Base64);
                         await _ctx.Pictures.AddAsync(picture);
                         await AddPictureToCategory(picture, "No Category");
