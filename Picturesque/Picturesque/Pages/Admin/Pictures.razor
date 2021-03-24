@@ -90,9 +90,19 @@ else
 
         if (token != null && isAdmin)
         {
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            pictures = await Http.GetJsonAsync<Picture[]>("https://localhost:44317/api/Picture");
-            categories = await Http.GetJsonAsync<Category[]>("https://localhost:44317/api/Category");
+            try
+            {
+                Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                pictures = await Http.GetJsonAsync<Picture[]>("https://localhost:44317/api/Picture");
+                categories = await Http.GetJsonAsync<Category[]>("https://localhost:44317/api/Category");
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("401"))
+                {
+                    await TokenProvider.SetTokenAsync(null);
+                }
+            }
         }
         else
         {

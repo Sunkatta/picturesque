@@ -56,9 +56,20 @@ else
 
         if (token != null && isAdmin)
         {
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await Http.GetJsonAsync<User[]>("https://localhost:44317/api/User");
-            users = response.ToList();
+            try
+            {
+                Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var response = await Http.GetJsonAsync<User[]>("https://localhost:44317/api/User");
+                users = response.ToList();
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("401"))
+                {
+                    await TokenProvider.SetTokenAsync(null);
+                }
+            }
+
         }
         else
         {

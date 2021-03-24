@@ -43,8 +43,18 @@ else
         var token = await TokenProvider.GetTokenAsync();
         if (token != null)
         {
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            gameScores = await Http.GetJsonAsync<GameScore[]>("https://localhost:44317/api/Statistics");
+            try
+            {
+                Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                gameScores = await Http.GetJsonAsync<GameScore[]>("https://localhost:44317/api/Statistics");
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("401"))
+                {
+                    await TokenProvider.SetTokenAsync(null);
+                }
+            }
         }
     }
 }
