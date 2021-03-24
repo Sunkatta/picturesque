@@ -20,12 +20,12 @@ else
                     <InputSelect class="form-control" @bind-Value="gameOptionsInputModel.CategoryId">
                         <option value="" selected>--</option>
                         @foreach (var category in gameOptions.Categories)
-                        {
-                            if (category.Name != "No Category")
-                            {
+                                {
+                                    if (category.Name != "No Category")
+                                    {
                                 <option value="@category.Id">@category.Name</option>
-                            }
-                        }
+                                    }
+                                }
                     </InputSelect>
                 </div>
                 <div class="form-group col-md-4">
@@ -55,12 +55,18 @@ else
     }
     else
     {
-        <p>Score: @score</p>
+        <div>
+            <p>Score: @score</p>
+            <p>Time left: @counter</p>
+        </div>
+        
         @if (hasWon)
         {
-            <p>NICE! You won! Submit your score and participate in the leaderboard?</p>
-            <button class="btn btn-primary" @onclick="SendScore">Submit my score</button>
-            <button class="btn btn-primary" @onclick="OnInitializedAsync">Start another game</button>
+            <div class="mb-3">
+                <p>NICE! You won! Submit your score and participate in the leaderboard?</p>
+                <button class="btn btn-primary" @onclick="SendScore">Submit my score</button>
+                <button class="btn btn-primary" @onclick="OnInitializedAsync">Start another game</button>
+            </div>
         }
     }
 
@@ -113,12 +119,22 @@ else
 @code {
     protected async Task SendScore()
     {
-        var context = await tokenProvider.GetAuthenticationStateAsync();
-        var userId = context.User.Claims.FirstOrDefault(c => c.Type.ToString() == "sub").Value;
-        GameScore gc = new GameScore(userId, game.CategoryId, game.Difficulty, score);
+        try
+        {
+            var context = await tokenProvider.GetAuthenticationStateAsync();
+            var userId = context.User.Claims.FirstOrDefault(c => c.Type.ToString() == "sub").Value;
+            GameScore gc = new GameScore(userId, game.CategoryId, game.Difficulty, score);
 
-        HttpClient client = new HttpClient();
-        await client.PostJsonAsync("https://localhost:44317/api/Statistics/CreateGameScore", gc);
-        await OnInitializedAsync();
+            HttpClient client = new HttpClient();
+            await client.PostJsonAsync("https://localhost:44317/api/Statistics/CreateGameScore", gc);
+            await OnInitializedAsync();
+        }
+        catch (Exception ex)
+        {
+            if (ex.Message.Contains("401"))
+            {
+                await tokenProvider.SetTokenAsync(null);
+            }
+        }
     }
 }

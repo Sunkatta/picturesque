@@ -26,6 +26,8 @@ namespace Picturesque.Components
         public GameOptionsInputModel gameOptionsInputModel = new GameOptionsInputModel();
         public Game game = new Game();
 
+        private Timer timer;
+
         protected override async Task OnInitializedAsync()
         {
             CleanUp();
@@ -88,13 +90,14 @@ namespace Picturesque.Components
 
         private void StartCountdown()
         {
-            var timer = new Timer(new TimerCallback(_ =>
+            timer = new Timer(new TimerCallback(_ =>
             {
                 if (counter <= 0 || numberOfMistakesAllowed == 0)
                 {
                     gameHasEnded = true;
                     hasLost = true;
                     gameHasStarted = false;
+                    timer.Dispose();
                     return;
                 }
                 counter--;
