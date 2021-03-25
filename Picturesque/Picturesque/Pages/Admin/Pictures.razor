@@ -23,8 +23,12 @@ else
     @if (addingPicture)
     {
         <div class="row mt-2">
-            <input class="form-control col-md-6" type="file" multiple @ref=inputTypeFileElement />
-            <button class="btn btn-outline-success col-md-6" @onclick=UploadFiles>Upload files</button>
+            <div class="col-md-6">
+                <input class="form-control" type="file" multiple @ref=inputTypeFileElement />
+            </div>
+            <div class="col-md-6">
+                <button class="btn btn-outline-success" @onclick=UploadFiles>Upload files</button>
+            </div>
         </div>
     }
     @if (editingPicture)
@@ -33,7 +37,7 @@ else
             <DataAnnotationsValidator />
             <ValidationSummary />
 
-            <div class="form-group">
+            <div class="form-group row mt-4">
                 <label>Select Category</label>
                 <InputSelect class="form-control" @bind-Value="picture.CategoryId">
                     <option value="" selected>--</option>
@@ -46,7 +50,7 @@ else
                     /**/
                 </InputSelect>
             </div>
-            <div class="form-group">
+            <div class="form-group row">
                 <button type="submit" class="btn btn-outline-success w-100">Add Category</button>
             </div>
         </EditForm>
