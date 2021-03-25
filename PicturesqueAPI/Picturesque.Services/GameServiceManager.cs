@@ -26,7 +26,7 @@ namespace Picturesque.Services
         public async Task<Game> CreateGame(GameOptionsEntry gameOptions)
         {
             Category category =
-                await _categoryManager.GetRawCategoryById(gameOptions.CategoryId);
+                await _categoryManager.GetRawCategoryById(gameOptions.Category);
             Difficulty difficulty;
             Enum.TryParse(gameOptions.Difficulty, out difficulty);
 

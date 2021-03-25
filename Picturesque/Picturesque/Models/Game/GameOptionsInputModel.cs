@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Picturesque.Models
 {
     public class GameOptionsInputModel
     {
-        public string CategoryId { get; set; }
+        [Required]
+        public string Category { get; set; }
+
+        [Required]
         public string Difficulty { get; set; }
     }
 }
