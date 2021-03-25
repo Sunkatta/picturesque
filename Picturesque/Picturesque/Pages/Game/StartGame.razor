@@ -17,7 +17,7 @@ else
             <div class="row">
                 <div class="form-group col-md-4">
                     <label>Select Category</label>
-                    <InputSelect class="form-control" @bind-Value="gameOptionsInputModel.CategoryId">
+                    <InputSelect class="form-control" @bind-Value="gameOptionsInputModel.Category">
                         <option value="" selected>--</option>
                         @foreach (var category in gameOptions.Categories)
                                 {
@@ -55,9 +55,18 @@ else
     }
     else
     {
-        <div>
-            <p>Score: @score</p>
-            <p>Time left: @counter</p>
+        <div class="row">
+            <div class="col-md-6">
+                <p>Score: @score</p>
+            </div>
+            <div class="col-md-6">
+                <p>Time left: @counter</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <p>Mistakes allowed: @numberOfMistakesAllowed</p>
+            </div>
         </div>
         
         @if (hasWon)

@@ -13,7 +13,7 @@ namespace Picturesque.Components
         public int numberOfSelectedPictures = 0;
         public int numberOfPicturesVisible = 0;
         public int score = 0;
-        public int numberOfMistakesAllowed = 10;
+        public int numberOfMistakesAllowed;
         public int counter;
 
         public bool gameHasStarted = false;
@@ -77,11 +77,18 @@ namespace Picturesque.Components
         {
             switch (game.Difficulty)
             {
-                case 0: counter = 300;
+                case 0:
+                    counter = 60;
+                    numberOfMistakesAllowed = 10;
                     break;
-                case 1: counter = 600;
+                case 1:
+                    counter = 120;
+                    numberOfMistakesAllowed = 32;
                     break;
-                case 2: counter = 900;
+                // TOOD: Tweak Hard mode
+                case 2:
+                    counter = 900;
+                    numberOfMistakesAllowed = 50;
                     break;
                 default:
                     break;
