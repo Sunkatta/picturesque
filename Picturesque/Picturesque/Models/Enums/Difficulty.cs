@@ -3,7 +3,7 @@
     public enum Difficulty
     {
         Easy,
-        Madium,
+        Medium,
         Hard
     }
 }
