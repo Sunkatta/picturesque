@@ -2,9 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Picturesque.DB;
 using Picturesque.Domain;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Picturesque.Services
@@ -34,25 +32,22 @@ namespace Picturesque.Services
 
         public async Task<IEnumerable<CategoryView>> GetCategoriesAsync()
         {
-            var rawCategories =
-                await _ctx.Categories.ToListAsync();
-            var categories = _mapper.Map<List<CategoryView>>(rawCategories);
+            List<Category> rawCategories = await _ctx.Categories.ToListAsync();
+            List<CategoryView> categories = _mapper.Map<List<CategoryView>>(rawCategories);
 
             return categories;
         }
 
         public async Task<Category> GetRawCategoryById(string id)
         {
-            return
-                await _ctx.Categories
+            return await _ctx.Categories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<Category> GetRawCategoryByName(string name)
         {
-            return
-                await _ctx.Categories
+            return await _ctx.Categories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Name == name);
         }

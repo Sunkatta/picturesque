@@ -32,6 +32,13 @@ namespace PicturesqueAPI.Controllers.Admin
         {
             try
             {
+                Category existingCategory = await _categoryManager.GetRawCategoryByName(entry.Name);
+
+                if (existingCategory != null)
+                {
+                    return BadRequest("Category already exists");
+                }
+
                 Category category = new Category(entry.Name);
 
                 await _categoryManager.CreateCategoryAsync(category);
@@ -64,16 +71,24 @@ namespace PicturesqueAPI.Controllers.Admin
         {
             try
             {
-                Category category =
-                    await _categoryManager.GetRawCategoryById(entry.Id);
-                if (category == null)
-                    return NotFound();
+                Category category = await _categoryManager.GetRawCategoryById(entry.Id);
 
-                category =
-                    new Category(
-                        entry.Name ?? category.Name,
-                        new CustomId(new Guid(category.Id))
-                        );
+                if (category == null)
+                {
+                    return NotFound();
+                }
+
+                Category categoryWithSameName = await _categoryManager.GetRawCategoryByName(entry.Name);
+
+                if (categoryWithSameName != null)
+                {
+                    return BadRequest("Category already exists");
+                }
+
+                category = new Category(
+                    entry.Name ?? category.Name,
+                    new CustomId(new Guid(category.Id))
+                    );
 
                 await _categoryManager.UpdateCategoryAsync(category);
             }
