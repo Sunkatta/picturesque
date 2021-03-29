@@ -5,82 +5,82 @@
 @inject NavigationManager UriHelper;
 @attribute [Authorize]
 
-<AuthorizeView Context="AuthorizeContext">
-    <h1>Categories</h1>
+<h1>Categories</h1>
 
-    @if (categories == null)
+@if (categories == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row justify-content-end mr-3 mt-4">
+        <button class="btn btn-primary"
+                @onclick="OnAddCategory">
+            @(addingCategory ? "Cancel" : "Add new category")
+        </button>
+    </div>
+    @if (addingCategory)
     {
-        <p><em>Loading...</em></p>
+        <EditForm Model="category" OnValidSubmit="AddCategory">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group">
+                <label for="name">Category Name</label>
+                <InputText id="name" class="form-control" @bind-Value="category.Name"></InputText>
+            </div>
+            <p class="text-danger">@errorMessage</p>
+            <button type="submit" class="btn btn-outline-success mt-2 w-100">Create Category</button>
+        </EditForm>
     }
-    else
+    @if (editingCategory)
     {
-        <div class="row justify-content-end mr-3 mt-4">
-            <button class="btn btn-primary"
-                    @onclick="OnAddCategory">
-                Add new category
-            </button>
-        </div>
-        @if (addingCategory)
-        {
-            <EditForm Model="category" OnValidSubmit="AddCategory">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
+        <EditForm Model="category" OnValidSubmit="EditCategory">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
 
-                <div class="form-group">
-                    <label for="name">Category Name</label>
-                    <InputText id="name" class="form-control" @bind-Value="category.Name"></InputText>
-                </div>
-                <button type="submit" class="btn btn-outline-success mt-2 w-100">Create Category</button>
-            </EditForm>
-        }
-        @if (editingCategory)
-        {
-            <EditForm Model="category" OnValidSubmit="EditCategory">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
-
-                <div class="form-group">
-                    <label for="name">Category Name</label>
-                    <InputText id="name" class="form-control" @bind-Value="category.Name"></InputText>
-                </div>
-                <button type="submit" class="btn btn-outline-success mt-2 w-100">Edit Category</button>
-            </EditForm>
-        }
-        <table class="table mt-2">
-            <thead>
+            <div class="form-group">
+                <label for="name">Category Name</label>
+                <InputText id="name" class="form-control" @bind-Value="category.Name"></InputText>
+            </div>
+            <p class="text-danger">@errorMessage</p>
+            <button type="submit" class="btn btn-outline-success mt-2 w-100">Edit Category</button>
+        </EditForm>
+    }
+    <table class="table mt-2">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in categories)
+            {
                 <tr>
-                    <th>Id</th>
-                    <th>Name</th>
-                    <th>Actions</th>
+                    <td>@category.Id</td>
+                    <td>@category.Name</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => OnEditCategory(category.Id)">
+                            Edit
+                        </button>
+                        <button class="btn btn-outline-danger" @onclick="() => DeleteCategory(category.Id)">
+                            Delete
+                        </button>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var category in categories)
-                {
-                    <tr>
-                        <td>@category.Id</td>
-                        <td>@category.Name</td>
-                        <td>
-                            <button class="btn btn-primary" @onclick="() => OnEditCategory(category.Id)">Edit</button>
-                        </td>
-                        <td>
-                            <button class="btn btn-outline-danger"
-                                    @onclick="() => DeleteCategory(category.Id)">
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-</AuthorizeView>
+            }
+        </tbody>
+    </table>
+}
 
 @code {
     private Category[] categories;
     private Category category = new Category();
     private bool addingCategory = false;
     private bool editingCategory = false;
+    private string errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
@@ -114,6 +114,7 @@
     protected void OnAddCategory()
     {
         addingCategory = !addingCategory;
+        errorMessage = string.Empty;
         editingCategory = false;
         category = new Category();
     }
@@ -127,20 +128,42 @@
 
     protected async Task AddCategory()
     {
-        await Http.PostJsonAsync("https://localhost:44317/api/Category/CreateCategory", category);
-        categories = null;
-        categories = await Http.GetJsonAsync<Category[]>("https://localhost:44317/api/Category");
-        addingCategory = false;
-        category = new Category();
+        try
+        {
+            await Http.PostJsonAsync("https://localhost:44317/api/Category/CreateCategory", category);
+            categories = null;
+            categories = await Http.GetJsonAsync<Category[]>("https://localhost:44317/api/Category");
+            addingCategory = false;
+            category = new Category();
+        }
+        catch (Exception ex)
+        {
+            if (ex.Message.Contains("400"))
+            {
+                errorMessage = "Category already exists";
+            }
+        }
+
     }
 
     protected async Task EditCategory()
     {
-        await Http.PostJsonAsync("https://localhost:44317/api/Category/UpdateCategory", category);
-        categories = null;
-        categories = await Http.GetJsonAsync<Category[]>("https://localhost:44317/api/Category");
-        editingCategory = false;
-        category = new Category();
+        try
+        {
+            await Http.PostJsonAsync("https://localhost:44317/api/Category/UpdateCategory", category);
+            categories = null;
+            categories = await Http.GetJsonAsync<Category[]>("https://localhost:44317/api/Category");
+            editingCategory = false;
+            category = new Category();
+        }
+        catch (Exception ex)
+        {
+            if (ex.Message.Contains("400"))
+            {
+                errorMessage = "Category already exists";
+            }
+        }
+
     }
 
     protected async Task DeleteCategory(string categoryId)
