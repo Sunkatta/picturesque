@@ -1,5 +1,6 @@
 ﻿@page "/leaderboard"
 @using System.Net.Http.Headers;
+@using Picturesque.Models.Enums; 
 @inject HttpClient Http
 @inject TokenAuthenticationStateProvider TokenProvider
 @attribute [Authorize]
@@ -12,7 +13,20 @@
 }
 else
 {
-    <table class="table">
+    <EditForm Model="selectedDifficulty">
+        <div class="form-group">
+            <label for="difficulty">Filter by</label>
+            <InputSelect class="form-control" @bind-Value="selectedDifficulty" @onchange="OnDifficultyChanged">
+                <option value="" selected>All</option>
+                @foreach (Difficulty difficulty in Enum.GetValues(typeof(Difficulty)))
+                {
+                    <option value="@difficulty">@difficulty</option>
+                }
+            </InputSelect>
+        </div>
+    </EditForm>
+
+    <table class="table mt-3">
         <thead>
             <tr>
                 <th>Username</th>
@@ -37,6 +51,7 @@ else
 
 @code {
     private GameScore[] gameScores;
+    private Difficulty selectedDifficulty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -56,5 +71,11 @@ else
                 }
             }
         }
+    }
+
+    protected void OnDifficultyChanged()
+    {
+        gameScores = gameScores.Where(c => c.Difficulty == selectedDifficulty).ToArray();
+        StateHasChanged();
     }
 }
