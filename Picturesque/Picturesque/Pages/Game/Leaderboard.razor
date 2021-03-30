@@ -16,8 +16,10 @@ else
     <EditForm Model="selectedDifficulty">
         <div class="form-group">
             <label for="difficulty">Filter by</label>
-            <InputSelect class="form-control" @bind-Value="selectedDifficulty" @onchange="OnDifficultyChanged">
-                <option value="" selected>All</option>
+            <InputSelect class="form-control"
+                         Value="selectedDifficulty"
+                         ValueExpression="@(() => selectedDifficulty)" 
+                         ValueChanged="@((Difficulty newValue) => OnDifficultyChanged(newValue))">
                 @foreach (Difficulty difficulty in Enum.GetValues(typeof(Difficulty)))
                 {
                     <option value="@difficulty">@difficulty</option>
@@ -36,7 +38,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var gameScore in gameScores)
+            @foreach (var gameScore in filteredGameScores)
             {
                 <tr>
                     <td>@gameScore.Username</td>
@@ -51,6 +53,7 @@ else
 
 @code {
     private GameScore[] gameScores;
+    private GameScore[] filteredGameScores;
     private Difficulty selectedDifficulty;
 
     protected override async Task OnInitializedAsync()
@@ -62,6 +65,8 @@ else
             {
                 Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 gameScores = await Http.GetJsonAsync<GameScore[]>("https://localhost:44317/api/Statistics");
+                selectedDifficulty = Difficulty.All;
+                filteredGameScores = gameScores;
             }
             catch (Exception ex)
             {
@@ -73,9 +78,10 @@ else
         }
     }
 
-    protected void OnDifficultyChanged()
+    protected void OnDifficultyChanged(Difficulty difficulty)
     {
-        gameScores = gameScores.Where(c => c.Difficulty == selectedDifficulty).ToArray();
+        selectedDifficulty = difficulty;
+        filteredGameScores = selectedDifficulty == Difficulty.All ? gameScores : gameScores.Where(c => c.Difficulty == difficulty).ToArray();
         StateHasChanged();
     }
 }
