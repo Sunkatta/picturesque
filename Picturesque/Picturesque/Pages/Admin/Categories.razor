@@ -1,5 +1,6 @@
 ﻿@page "/categories"
 @using System.Net.Http.Headers;
+@using Picturesque.Models.Constants;
 @inject HttpClient Http;
 @inject TokenAuthenticationStateProvider TokenProvider;
 @inject NavigationManager UriHelper;
@@ -95,7 +96,7 @@ else
             try
             {
                 Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                categories = await Http.GetJsonAsync<Category[]>("https://localhost:44317/api/Category");
+                categories = await Http.GetJsonAsync<Category[]>(ApiConstants.ApiUrl + "Category");
             }
             catch (Exception ex)
             {
@@ -130,9 +131,9 @@ else
     {
         try
         {
-            await Http.PostJsonAsync("https://localhost:44317/api/Category/CreateCategory", category);
+            await Http.PostJsonAsync(ApiConstants.ApiUrl + "Category/CreateCategory", category);
             categories = null;
-            categories = await Http.GetJsonAsync<Category[]>("https://localhost:44317/api/Category");
+            categories = await Http.GetJsonAsync<Category[]>(ApiConstants.ApiUrl + "Category");
             addingCategory = false;
             category = new Category();
         }
@@ -150,9 +151,9 @@ else
     {
         try
         {
-            await Http.PostJsonAsync("https://localhost:44317/api/Category/UpdateCategory", category);
+            await Http.PostJsonAsync(ApiConstants.ApiUrl + "Category/UpdateCategory", category);
             categories = null;
-            categories = await Http.GetJsonAsync<Category[]>("https://localhost:44317/api/Category");
+            categories = await Http.GetJsonAsync<Category[]>(ApiConstants.ApiUrl + "Category");
             editingCategory = false;
             category = new Category();
         }
@@ -170,7 +171,7 @@ else
     {
         category = categories.FirstOrDefault(c => c.Id == categoryId);
         categories =
-            await Http.PostJsonAsync<Category[]>("https://localhost:44317/api/Category/DeleteCategory", category);
+            await Http.PostJsonAsync<Category[]>(ApiConstants.ApiUrl + "Category/DeleteCategory", category);
         category = new Category();
     }
 }

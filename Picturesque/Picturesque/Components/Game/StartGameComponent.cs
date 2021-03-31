@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Picturesque.Models;
+using Picturesque.Models.Constants;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -34,7 +35,7 @@ namespace Picturesque.Components
             game.Pictures = new List<Picture>();
 
             HttpClient client = new HttpClient();
-            gameOptions = await client.GetJsonAsync<GameOptions>("https://localhost:44317/api/Game/GetGameOptions");
+            gameOptions = await client.GetJsonAsync<GameOptions>(ApiConstants.ApiUrl + "Game/GetGameOptions");
         }
 
         protected async Task StartGame()
@@ -42,7 +43,7 @@ namespace Picturesque.Components
             CleanUp();
             HttpClient client = new HttpClient();
             game = await client.PostJsonAsync<Game>(
-                    "https://localhost:44317/api/Game/StartGame",
+                    ApiConstants.ApiUrl + "Game/StartGame",
                     gameOptionsInputModel
                     );
 

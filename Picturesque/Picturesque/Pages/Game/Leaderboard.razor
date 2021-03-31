@@ -1,6 +1,7 @@
 ﻿@page "/leaderboard"
 @using System.Net.Http.Headers;
 @using Picturesque.Models.Enums; 
+@using Picturesque.Models.Constants; 
 @inject HttpClient Http
 @inject TokenAuthenticationStateProvider TokenProvider
 @attribute [Authorize]
@@ -64,7 +65,7 @@ else
             try
             {
                 Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                gameScores = await Http.GetJsonAsync<GameScore[]>("https://localhost:44317/api/Statistics");
+                gameScores = await Http.GetJsonAsync<GameScore[]>(ApiConstants.ApiUrl + "Statistics");
                 selectedDifficulty = Difficulty.All;
                 filteredGameScores = gameScores;
             }

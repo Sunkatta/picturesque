@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Picturesque.Models;
+using Picturesque.Models.Constants;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -15,7 +16,7 @@ namespace Picturesque.Components
         public async void BlockUser(string id)
         {
             HttpClient client = new HttpClient();
-            bool isBlocked = await client.PostJsonAsync<bool>("https://localhost:44317/api/User/Block", id);
+            bool isBlocked = await client.PostJsonAsync<bool>(ApiConstants.ApiUrl + "User/Block", id);
             User user = users.FirstOrDefault(u => u.Id == id);
             user.IsBlocked = isBlocked;
             StateHasChanged();

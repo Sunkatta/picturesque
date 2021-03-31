@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using Picturesque.Models;
+using Picturesque.Models.Constants;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace Picturesque.Components
             StateHasChanged();
             HttpClient client = new HttpClient();
             var response = await client.PostAsync(
-                "https://localhost:44317/api/Account/Register",
+                ApiConstants.ApiUrl + "Account/Register",
                 new StringContent(JsonConvert.SerializeObject(registerInputModel), Encoding.UTF8, "application/json"));
 
             if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)

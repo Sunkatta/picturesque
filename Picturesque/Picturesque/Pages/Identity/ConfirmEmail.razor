@@ -1,5 +1,6 @@
 ﻿@page "/Account/ConfirmEmail";
 @using Microsoft.AspNetCore.WebUtilities;
+@using Picturesque.Models.Constants;
 @inject NavigationManager NavigationManager
 @inject HttpClient client;
 
@@ -51,7 +52,7 @@
 
         if (!string.IsNullOrEmpty(Email) && !string.IsNullOrEmpty(ConfirmationCode))
         {
-            isEmailConfirmed = await client.GetJsonAsync<bool>($"https://localhost:44317/api/Account/ConfirmEmail?email={Email}&emailConfirmationKey={ConfirmationCode}");
+            isEmailConfirmed = await client.GetJsonAsync<bool>($"{ApiConstants.ApiUrl}Account/ConfirmEmail?email={Email}&emailConfirmationKey={ConfirmationCode}");
         }
 
         loading = false;

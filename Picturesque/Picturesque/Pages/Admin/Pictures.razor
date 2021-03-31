@@ -1,5 +1,6 @@
 ﻿@page "/pictures"
 @using System.Net.Http.Headers;
+@using Picturesque.Models.Constants;
 @inject HttpClient Http;
 @inject TokenAuthenticationStateProvider TokenProvider;
 @inject NavigationManager UriHelper;
@@ -97,8 +98,8 @@ else
             try
             {
                 Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                pictures = await Http.GetJsonAsync<Picture[]>("https://localhost:44317/api/Picture");
-                categories = await Http.GetJsonAsync<Category[]>("https://localhost:44317/api/Category");
+                pictures = await Http.GetJsonAsync<Picture[]>(ApiConstants.ApiUrl + "Picture");
+                categories = await Http.GetJsonAsync<Category[]>(ApiConstants.ApiUrl + "Category");
             }
             catch (Exception ex)
             {
@@ -142,16 +143,16 @@ else
                 (await file.ReadFileInfoAsync()).Name);
         }
 
-        var res = await Http.PostAsync("https://localhost:44317/api/Picture/UploadPictures",
+        var res = await Http.PostAsync(ApiConstants.ApiUrl + "Picture/UploadPictures",
                 content: multipartFormDataContent);
-        pictures = await Http.GetJsonAsync<Picture[]>("https://localhost:44317/api/Picture");
+        pictures = await Http.GetJsonAsync<Picture[]>(ApiConstants.ApiUrl + "Picture");
     }
 
     protected async Task AddCategoryToPicture()
     {
-        await Http.PostJsonAsync("https://localhost:44317/api/Picture/UpdatePictureCategory", picture);
+        await Http.PostJsonAsync(ApiConstants.ApiUrl + "Picture/UpdatePictureCategory", picture);
         pictures = null;
-        pictures = await Http.GetJsonAsync<Picture[]>("https://localhost:44317/api/Picture");
+        pictures = await Http.GetJsonAsync<Picture[]>(ApiConstants.ApiUrl + "Picture");
         editingPicture = false;
         picture = new Picture();
     }
@@ -160,7 +161,7 @@ else
     {
         picture = pictures.FirstOrDefault(c => c.Id == pictureId);
         pictures =
-            await Http.PostJsonAsync<Picture[]>("https://localhost:44317/api/Picture/DeletePicture", picture);
+            await Http.PostJsonAsync<Picture[]>(ApiConstants.ApiUrl + "Picture/DeletePicture", picture);
         picture = new Picture();
     }
 }

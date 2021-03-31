@@ -1,4 +1,5 @@
 ﻿@page  "/login"
+@using Picturesque.Models.Constants;
 @inject HttpClient client;
 @inject TokenAuthenticationStateProvider authStateProvider;
 @inject NavigationManager UriHelper;
@@ -50,7 +51,7 @@
     {
         try
         {
-            token = await client.PostJsonAsync<string>("https://localhost:44317/api/Account/Login", loginInputModel);
+            token = await client.PostJsonAsync<string>(ApiConstants.ApiUrl + "Account/Login", loginInputModel);
 
             if (token != null)
             {

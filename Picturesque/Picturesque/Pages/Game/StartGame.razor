@@ -1,4 +1,5 @@
 ﻿@page "/startgame"
+@using Picturesque.Models.Constants;
 @inject TokenAuthenticationStateProvider tokenProvider
 @inherits StartGameComponent
 @attribute [Authorize]
@@ -135,7 +136,7 @@ else
             GameScore gc = new GameScore(userId, game.CategoryId, game.Difficulty, score);
 
             HttpClient client = new HttpClient();
-            await client.PostJsonAsync("https://localhost:44317/api/Statistics/CreateGameScore", gc);
+            await client.PostJsonAsync(ApiConstants.ApiUrl + "Statistics/CreateGameScore", gc);
             await OnInitializedAsync();
         }
         catch (Exception ex)

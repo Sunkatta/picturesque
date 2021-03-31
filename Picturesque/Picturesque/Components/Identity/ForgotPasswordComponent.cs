@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Picturesque.Models;
+using Picturesque.Models.Constants;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -13,7 +14,7 @@ namespace Picturesque.Components
         public async Task HandleForgotPassword()
         {
             HttpClient client = new HttpClient();
-            await client.PostJsonAsync("https://localhost:44317/api/Account/ForgotPassword", emailInputModel);
+            await client.PostJsonAsync(ApiConstants.ApiUrl + "Account/ForgotPassword", emailInputModel);
             hasEmailBeenSent = true;
         }
     }

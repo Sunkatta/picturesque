@@ -1,5 +1,6 @@
 ﻿@page "/users"
 @using System.Net.Http.Headers;
+@using Picturesque.Models.Constants;
 @inject HttpClient Http;
 @inject TokenAuthenticationStateProvider TokenProvider;
 @inject NavigationManager UriHelper;
@@ -59,7 +60,7 @@ else
             try
             {
                 Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var response = await Http.GetJsonAsync<User[]>("https://localhost:44317/api/User");
+                var response = await Http.GetJsonAsync<User[]>(ApiConstants.ApiUrl + "User");
                 users = response.ToList();
             }
             catch (Exception ex)
