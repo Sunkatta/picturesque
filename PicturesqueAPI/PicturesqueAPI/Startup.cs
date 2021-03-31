@@ -44,7 +44,7 @@ namespace PicturesqueAPI
                     builder => builder
                     /*As long as credentials security is used in your application you should specify domain(s) from which CORS requests may come to your server. */
                     .WithOrigins(new string[] {
-                        "http://localhost:62455"
+                        Configuration["AppUrl"]
                         }
                     )
                     .AllowAnyMethod()

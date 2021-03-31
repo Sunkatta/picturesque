@@ -209,14 +209,14 @@ namespace Picturesque.Services
         private async Task SendConfirmationEmail(User user)
         {
             string code = Base64UrlEncoder.Encode(await _userManager.GenerateEmailConfirmationTokenAsync(user));
-            var confirmationLink = $"http://localhost:62455/Account/ConfirmEmail?email={user.Email}&emailConfirmationKey={code}";
+            var confirmationLink = $"{_config["AppUrl"]}/Account/ConfirmEmail?email={user.Email}&emailConfirmationKey={code}";
             await _emailService.SendEmailAsync(user.Email, "Confirm your Account", $"We are thrilled to see you on board! Please, click <a href='{confirmationLink}' target='_blanc'>HERE</a> to confirm your account. <br /> Cheers!");
         }
 
         private async Task SendForgotPasswordEmail(User user)
         {
             string code = Base64UrlEncoder.Encode(await _userManager.GeneratePasswordResetTokenAsync(user));
-            var confirmationLink = $"http://localhost:62455/Account/ResetPassword?email={user.Email}&passwordResetKey={code}";
+            var confirmationLink = $"{_config["AppUrl"]}/Account/ResetPassword?email={user.Email}&passwordResetKey={code}";
             await _emailService.SendEmailAsync(user.Email, "Reset Password", $"Please, click <a href='{confirmationLink}' target='_blanc'>HERE</a> to reset your password. <br /> Cheers!");
         }
     }
