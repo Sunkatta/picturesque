@@ -17,7 +17,7 @@ namespace Picturesque.Models
 
         [Required]
         [DataType(DataType.Password)]
-        [MinLength(5, ErrorMessage = "Password must be at least 5 characters.")]
+        [MinLength(6, ErrorMessage = "Password must be at least 6 characters.")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
