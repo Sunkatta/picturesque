@@ -51,28 +51,28 @@ else
 
         @if (hasLost)
         {
-            <p>You lose! Another game maybe?</p>
+            <div class="row text-center">
+                <p class="col-md-12">You lose! Another game maybe?</p>
+            </div>
         }
     }
     else
     {
-        <div class="row">
-            <div class="col-md-6">
+        <div class="row text-center">
+            <div class="col-md-4">
                 <p>Score: @score</p>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <p>Time left: @counter</p>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <p>Mistakes allowed: @numberOfMistakesAllowed</p>
             </div>
         </div>
         
         @if (hasWon)
         {
-            <div class="mb-3">
+            <div class="mb-3 text-center">
                 <p>NICE! You won! Submit your score and participate in the leaderboard?</p>
                 <button class="btn btn-primary" @onclick="SendScore">Submit my score</button>
                 <button class="btn btn-primary" @onclick="OnInitializedAsync">Start another game</button>
@@ -83,7 +83,7 @@ else
     @switch (game.Difficulty)
     {
         case 0:
-            <div class="row col-md-6">
+            <div class="row col-md-6 offset-md-3">
                 @foreach (var picture in game.Pictures)
                 {
                     <div @onclick="e => ShowPicture(picture)"
@@ -96,7 +96,7 @@ else
             </div>
             break;
         case 1:
-            <div class="row col-md-6">
+            <div class="row col-md-6 offset-md-3">
                 @foreach (var picture in game.Pictures)
                 {
                     <div @onclick="e => ShowPicture(picture)"
