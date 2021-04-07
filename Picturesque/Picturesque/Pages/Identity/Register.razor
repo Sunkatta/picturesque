@@ -1,24 +1,23 @@
 ﻿@page  "/register"
 @inherits RegisterComponent
-@inject NavigationManager UriHelper;
 
 <div class="login-register-holder">
     <div class="container">
         @if (hasSuccessfullyRegistered)
         {
-            <h3 class="text-center">Account Successfully Created!</h3>
+            <MatH3 class="text-center">Account Successfully Created!</MatH3>
             <div class="text-center form-holder w-50">
-                <h4>A confirmation email has been sent to</h4>
+                <MatH4>A confirmation email has been sent to</MatH4>
                 <br />
-                <h4>@registerInputModel.Email</h4>
-                <button type="submit" class="btn btn-outline-success mt-2 w-100" @onclick="@((e) => UriHelper.NavigateTo("login"))">
+                <MatH4>@registerInputModel.Email</MatH4>
+                <MatButton type="submit" Class="mt-2 w-100" Link="/login" Outlined="true">
                     To Login
-                </button>
+                </MatButton>
             </div>
         }
         else
         {
-            <h3 class="text-center">Create an Account</h3>
+            <MatH3 class="text-center">Create an Account</MatH3>
             <div class="form-holder">
                 <EditForm Model="@registerInputModel" OnValidSubmit="@HandleRegister">
                     <DataAnnotationsValidator />
@@ -27,28 +26,51 @@
                     <p class="text-danger text-center">@errorMessage</p>
 
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <InputText id="email" placeholder="johndoe@example.com" class="form-control" @bind-Value="registerInputModel.Email"></InputText>
+                        <MatTextField Class="w-100"
+                                      Required="true"
+                                      Label="Email"
+                                      Outlined="true"
+                                      @bind-Value="registerInputModel.Email">
+                        </MatTextField>
                     </div>
                     <div class="form-group">
-                        <label for="username">Username</label>
-                        <InputText id="username" placeholder="The name others will see" class="form-control" @bind-Value="registerInputModel.Username"></InputText>
+                        <MatTextField Class="w-100"
+                                      Required="true"
+                                      Label="Username"
+                                      Outlined="true"
+                                      @bind-Value="registerInputModel.Username">
+                        </MatTextField>
                     </div>
                     <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" placeholder="Should be at least 5 characters long" class="form-control" name="password" @bind-value="registerInputModel.Password" />
+                        <MatTextField Class="w-100"
+                                      Type="password"
+                                      Required="true"
+                                      Label="Password"
+                                      Outlined="true"
+                                      HelperText="Should be at least 6 characters long"
+                                      Icon="lock_outline"
+                                      IconTrailing="true"
+                                      @bind-Value="registerInputModel.Password">
+                        </MatTextField>
                     </div>
                     <div class="form-group">
-                        <label for="confirmPass">Confirm Password</label>
-                        <input type="password" placeholder="Confirm Password" class="form-control" name="confirmPass" @bind-value="registerInputModel.ConfirmPassword" />
+                        <MatTextField Class="w-100"
+                                      Type="password"
+                                      Required="true"
+                                      Label="Confirm Password"
+                                      Outlined="true"
+                                      Icon="lock_outline"
+                                      IconTrailing="true"
+                                      @bind-Value="registerInputModel.ConfirmPassword">
+                        </MatTextField>
                     </div>
-                    <div>
-                        <NavLink class="ml-md-auto" href="login">
+                    <div class="form-group text-center">
+                        <MatButton Link="/login">
                             Already have an account? Go to Login
-                        </NavLink>
+                        </MatButton>
                     </div>
                     <div class="text-center">
-                        <button type="submit" class="btn btn-outline-success mt-2 w-100">Register</button>
+                        <MatButton type="submit" Class="w-100" Outlined="true">Register</MatButton>
                     </div>
 
                 </EditForm>

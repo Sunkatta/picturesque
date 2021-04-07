@@ -6,7 +6,7 @@
 
 <div class="login-register-holder">
     <div class="container">
-        <h3 class="text-center">Login</h3>
+        <MatH3 Class="text-center">Login</MatH3>
         <div class="form-holder">
             <EditForm Model="@loginInputModel" OnValidSubmit="@HandleLogin">
                 <DataAnnotationsValidator />
@@ -15,14 +15,25 @@
                 <p class="text-danger text-center">@((MarkupString)errorMessage)</p>
 
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <InputText id="email" class="form-control" @bind-Value="loginInputModel.Email"></InputText>
+                    <MatTextField Class="w-100"
+                                  Required="true"
+                                  Label="Email"
+                                  Outlined="true"
+                                  @bind-Value="loginInputModel.Email">
+                    </MatTextField>
                 </div>
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control" name="password" @bind-value="loginInputModel.Password" />
+                    <MatTextField Class="w-100"
+                                  Type="password"
+                                  Required="true"
+                                  Label="Password"
+                                  Outlined="true"
+                                  Icon="lock_outline"
+                                  IconTrailing="true"
+                                  @bind-Value="loginInputModel.Password">
+                    </MatTextField>
                 </div>
-                <div class="row">
+                <div class="row form-group">
                     <div class="col-md-6">
                         <NavLink class="ml-md-auto" href="Account/ForgotPassword">
                             I forgot my password
@@ -35,7 +46,7 @@
                     </div>
                 </div>
                 <div class="text-center">
-                    <button type="submit" class="btn btn-outline-success mt-2 w-100">Login</button>
+                    <MatButton type="submit" Class="w-100" Outlined="true">Login</MatButton>
                 </div>
             </EditForm>
         </div>

@@ -1,27 +1,31 @@
 ﻿@page "/Account/ResendEmail";
 @inherits ResendEmailComponent;
-@inject NavigationManager UriHelper;
 
 <div class="text-center form-holder w-50">
     @if (hasEmailBeenSent)
     {
-        <h3 class="text-center">Check the inbox of @emailInputModel.Email!</h3>
-        <button type="submit" class="btn btn-outline-success mt-2 w-100" @onclick="@((e) => UriHelper.NavigateTo("login"))">
+        <MatH3 Class="text-center">Check the inbox of @emailInputModel.Email!</MatH3>
+        <MatButton type="submit" Class="w-100" Link="/login" Outlined="true">
             To Login
-        </button>
+        </MatButton>
     }
     else
     {
-        <h3>Your account is not confirmed and you did not receive any email? No worries, enter your email below and we'll send another one.</h3>
+        <MatH5>Your account is not confirmed and you did not receive any email? No worries, enter your email below and we'll send another one.</MatH5>
         <EditForm Model="@emailInputModel" OnValidSubmit="@HandleResendEmail">
             <DataAnnotationsValidator />
             <ValidationSummary />
 
             <div class="form-group">
-                <InputText id="email" placeholder="Enter your email here..." class="form-control" @bind-Value="emailInputModel.Email"></InputText>
+                <MatTextField Class="w-100"
+                              Required="true"
+                              Label="Enter your email here..."
+                              Outlined="true"
+                              @bind-Value="emailInputModel.Email">
+                </MatTextField>
             </div>
             <div class="text-center">
-                <button type="submit" class="btn btn-outline-success mt-2 w-100">Send Email</button>
+                <MatButton type="submit" Class="w-100" Outlined="true">Send Email</MatButton>
             </div>
         </EditForm>
     }

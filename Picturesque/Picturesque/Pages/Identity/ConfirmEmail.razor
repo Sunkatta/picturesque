@@ -13,15 +13,15 @@
     {
         @if (isEmailConfirmed)
         {
-            <h3>Email successfully confirmed!</h3>
+            <MatH3>Email successfully confirmed!</MatH3>
         }
         else
         {
-            <h3>The confirmation link is either invalid or has expired!</h3>
+            <MatH3>The confirmation link is either invalid or has expired!</MatH3>
         }
-        <button type="submit" class="btn btn-outline-success mt-2 w-100" @onclick="@((e) => NavigationManager.NavigateTo("login"))">
+        <MatButton type="submit" Class="w-100" Link="/login" Outlined="true">
             To Login
-        </button>
+        </MatButton>
     }
 </div>
 
