@@ -102,11 +102,15 @@ namespace Picturesque.Components
             {
                 if (counter <= 0 || numberOfMistakesAllowed == 0)
                 {
-                    gameHasEnded = true;
-                    hasLost = true;
-                    gameHasStarted = false;
-                    timer.Dispose();
-                    return;
+                    if (!hasWon)
+                    {
+                        gameHasEnded = true;
+                        hasLost = true;
+                        gameHasStarted = false;
+                        timer.Dispose();
+                        StateHasChanged();
+                        return;
+                    }
                 }
                 counter--;
 

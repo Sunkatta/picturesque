@@ -14,70 +14,65 @@ else
     {
         <EditForm Model="@gameOptionsInputModel" OnValidSubmit="@StartGame">
             <DataAnnotationsValidator />
-            <ValidationSummary />
             <div class="row">
                 <div class="form-group col-md-4">
-                    <label>Select Category</label>
-                    <InputSelect class="form-control" @bind-Value="gameOptionsInputModel.Category">
-                        <option value="" selected>--</option>
+                    <MatSelect Label="Select Category" Class="form-control mb-1" Outlined="true" @bind-Value="gameOptionsInputModel.Category">
+                        <MatOption Value=""></MatOption>
                         @foreach (var category in gameOptions.Categories)
-                                {
-                                    if (category.Name != "No Category")
-                                    {
-                                <option value="@category.Id">@category.Name</option>
-                                    }
-                                }
-                    </InputSelect>
+                        {
+                            if (category.Name != "No Category")
+                            {
+                                <MatOption Value="@category.Id">@category.Name</MatOption>
+                            }
+                        }
+                    </MatSelect>
+                    <ValidationMessage For="@(() => gameOptionsInputModel.Category)"></ValidationMessage>
                 </div>
                 <div class="form-group col-md-4">
-                    <label>Select Difficulty</label>
-                    <InputSelect class="form-control" @bind-Value="gameOptionsInputModel.Difficulty">
-                        <option value="" selected>--</option>
+                    <MatSelect Label="Select Difficulty" Class="form-control mb-1" Outlined="true" @bind-Value="gameOptionsInputModel.Difficulty">
+                        <MatOption Value=""></MatOption>
                         @foreach (var difficulty in gameOptions.Difficulties)
-                                {
-                            <option value="@difficulty">@difficulty</option>
-                                }
-                        /**/
-                        /**/
-                        /**/
-                    </InputSelect>
+                        {
+                            <MatOption Value="@difficulty">@difficulty</MatOption>
+                        }
+                    </MatSelect>
+                    <ValidationMessage For="@(() => gameOptionsInputModel.Difficulty)"></ValidationMessage>
                 </div>
                 <div class="form-group text-center col-md-4">
-                    <label></label>
-                    <button type="submit" class="btn btn-outline-success mt-2 w-100">Start Game</button>
+                    <MatButton Type="submit" Class="mt-3 w-100" Outlined="true">Start Game</MatButton>
                 </div>
             </div>
         </EditForm>
-
-        @if (hasLost)
-        {
-            <div class="row text-center">
-                <p class="col-md-12">You lose! Another game maybe?</p>
-            </div>
-        }
     }
     else
     {
         <div class="row text-center">
             <div class="col-md-4">
-                <p>Score: @score</p>
+                <MatSubtitle2>Score: @score</MatSubtitle2>
             </div>
             <div class="col-md-4">
-                <p>Time left: @counter</p>
+                <MatSubtitle2>Time left: @(counter < 0 ? 0 : counter)</MatSubtitle2>
             </div>
             <div class="col-md-4">
-                <p>Mistakes allowed: @numberOfMistakesAllowed</p>
+                <MatSubtitle2>Mistakes allowed: @numberOfMistakesAllowed</MatSubtitle2>
             </div>
         </div>
-        
-        @if (hasWon)
-        {
-            <div class="mb-3 text-center">
-                <p>NICE! You won! Submit your score and participate in the leaderboard?</p>
-                <button class="btn btn-primary" @onclick="SendScore">Submit my score</button>
-                <button class="btn btn-primary" @onclick="OnInitializedAsync">Start another game</button>
-            </div>
-        }
+    }
+
+    @if (hasWon)
+    {
+        <div class="mb-3 text-center">
+            <MatH6>NICE! You won! Submit your score and participate in the leaderboard?</MatH6>
+            <MatButton Outlined="true" @onclick="SendScore">Submit my score</MatButton>
+            <MatButton Outlined="true" @onclick="OnInitializedAsync">Start another game</MatButton>
+        </div>
+    }
+
+    @if (hasLost)
+    {
+        <div class="row text-center">
+            <MatSubtitle2 class="col-md-12">You lose! Another game maybe?</MatSubtitle2>
+        </div>
     }
 
     @switch (game.Difficulty)
@@ -86,12 +81,18 @@ else
             <div class="row col-md-6 offset-md-3">
                 @foreach (var picture in game.Pictures)
                 {
-                    <div @onclick="e => ShowPicture(picture)"
-                         class="col-md-3"
-                         style="border: 1px solid black; padding: 0;">
-                        <img class="img @(!picture.IsVisible ? "img-hidden" : "")"
-                             src="@picture.Img2Base64" />
-                    </div>
+                    <MatCard @onclick="e => ShowPicture(picture)"
+                             Class="col-md-3"
+                             Style="border: 1px solid black; padding: 0;">
+                        <MatCardContent>
+                            <img class="img @(!picture.IsVisible ? "img-hidden" : "")" src="@picture.Img2Base64" />
+                        </MatCardContent>
+                    </MatCard>
+                    @*<div @onclick="e => ShowPicture(picture)"
+                                 class="col-md-3"
+                                 style="border: 1px solid black; padding: 0;">
+                            <img class="img @(!picture.IsVisible ? "img-hidden" : "")" src="@picture.Img2Base64" />
+                        </div>*@
                 }
             </div>
             break;
@@ -99,25 +100,30 @@ else
             <div class="row col-md-6 offset-md-3">
                 @foreach (var picture in game.Pictures)
                 {
-                    <div @onclick="e => ShowPicture(picture)"
-                         class="col-md-2"
-                         style="border: 1px solid black; padding: 0;">
-                        <img class="img @(!picture.IsVisible ? "img-hidden" : "")"
-                             src="@picture.Img2Base64" />
-                    </div>
+                    <MatCard @onclick="e => ShowPicture(picture)"
+                             Class="col-md-2"
+                             Style="border: 1px solid black; padding: 0;">
+                        <MatCardContent>
+                            <img class="img @(!picture.IsVisible ? "img-hidden" : "")"
+                                 src="@picture.Img2Base64" />
+                        </MatCardContent>
+                    </MatCard>
                 }
             </div>
             break;
         case 2:
-            <div class="section group col-md-6">
+            // TODO: Needs to be centered
+            <div class="section group col-md-6 offset-md-3">
                 @foreach (var picture in game.Pictures)
                 {
-                    <div @onclick="e => ShowPicture(picture)"
-                         class="col span_1_of_8"
-                         style="border: 1px solid black; padding: 0;">
-                        <img class="img @(!picture.IsVisible ? "img-hidden" : "")"
-                             src="@picture.Img2Base64" />
-                    </div>
+                    <MatCard @onclick="e => ShowPicture(picture)"
+                         Class="col span_1_of_8"
+                         Style="border: 1px solid black; padding: 0;">
+                        <MatCardContent>
+                            <img class="img @(!picture.IsVisible ? "img-hidden" : "")"
+                                 src="@picture.Img2Base64" />
+                        </MatCardContent>
+                    </MatCard>
                 }
             </div>
             break;
