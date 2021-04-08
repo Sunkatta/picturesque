@@ -21,7 +21,7 @@
             <div class="form-holder">
                 <EditForm Model="@registerInputModel" OnValidSubmit="@HandleRegister">
                     <DataAnnotationsValidator />
-                    <ValidationSummary />
+                    @*<ValidationSummary />*@
 
                     <p class="text-danger text-center">@errorMessage</p>
 
@@ -32,6 +32,7 @@
                                       Outlined="true"
                                       @bind-Value="registerInputModel.Email">
                         </MatTextField>
+                        <ValidationMessage For="@(() => registerInputModel.Email)"></ValidationMessage>
                     </div>
                     <div class="form-group">
                         <MatTextField Class="w-100"
@@ -40,6 +41,7 @@
                                       Outlined="true"
                                       @bind-Value="registerInputModel.Username">
                         </MatTextField>
+                        <ValidationMessage For="@(() => registerInputModel.Username)"></ValidationMessage>
                     </div>
                     <div class="form-group">
                         <MatTextField Class="w-100"
@@ -52,6 +54,7 @@
                                       IconTrailing="true"
                                       @bind-Value="registerInputModel.Password">
                         </MatTextField>
+                        <ValidationMessage For="@(() => registerInputModel.Password)"></ValidationMessage>
                     </div>
                     <div class="form-group">
                         <MatTextField Class="w-100"
@@ -63,6 +66,7 @@
                                       IconTrailing="true"
                                       @bind-Value="registerInputModel.ConfirmPassword">
                         </MatTextField>
+                        <ValidationMessage For="@(() => registerInputModel.ConfirmPassword)"></ValidationMessage>
                     </div>
                     <div class="form-group text-center">
                         <MatButton Link="/login">
@@ -70,7 +74,7 @@
                         </MatButton>
                     </div>
                     <div class="text-center">
-                        <MatButton type="submit" Class="w-100" Outlined="true">Register</MatButton>
+                        <MatButton Type="submit" Class="w-100" Outlined="true">Register</MatButton>
                     </div>
 
                 </EditForm>

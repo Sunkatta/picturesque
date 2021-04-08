@@ -207,6 +207,14 @@ app {
     visibility: hidden;
 }
 
+.invalid {
+    outline: none;
+}
+
+.valid.modified:not([type=checkbox]) {
+    outline: none;
+}
+
 /*  SECTIONS  */
 .section {
     clear: both;
