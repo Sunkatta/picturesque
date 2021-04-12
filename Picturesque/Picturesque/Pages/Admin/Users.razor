@@ -15,41 +15,37 @@
 }
 else
 {
-    <table class="table mt-2">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Email</th>
-                <th>Username</th>
-                <th>Blocked</th>
-                <th>Admin</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in users)
-            {
-                <tr>
-                    <td>@(counter++)</td>
-                    <td>@user.Email</td>
-                    <td>@user.Username</td>
-                    <td>@(user.IsBlocked ? "Yes" : "No")</td>
-                    <td>@(user.IsAdmin ? "Yes": "No")</td>
-                    <td>
-                        <button class="btn btn-outline-danger" @onclick="() => BlockUser(user.Id)">
-                            @(user.IsBlocked ? "Unblock" : "Block")
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <MatTable Items="users"
+              LoadInitialData="true"
+              FilterByColumnName="Email"
+              DebounceMilliseconds="150">
+        <MatTableHeader>
+            <th>Id</th>
+            <th>Email</th>
+            <th>Username</th>
+            <th>Blocked</th>
+            <th>Admin</th>
+            <th>Actions</th>
+        </MatTableHeader>
+        <MatTableRow>
+            <td>@context.Id</td>
+            <td>@context.Email</td>
+            <td>@context.Username</td>
+            <td>@(context.IsBlocked ? "Yes" : "No")</td>
+            <td>@(context.IsAdmin ? "Yes": "No")</td>
+            <td>
+                <button class="btn btn-outline-danger" @onclick="() => BlockUser(context.Id)">
+                    @(context.IsBlocked ? "Unblock" : "Block")
+                </button>
+            </td>
+        </MatTableRow>
+    </MatTable>
 }
 
 @code {
     protected override async Task OnInitializedAsync()
     {
-        var token = await TokenProvider.GetTokenAsync();
+        token = await TokenProvider.GetTokenAsync();
         var isAdmin = (await TokenProvider.GetAuthenticationStateAsync())
             .User
             .Claims

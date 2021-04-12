@@ -14,47 +14,27 @@
 }
 else
 {
-    <EditForm Model="selectedDifficulty">
-        <div class="form-group">
-            <label for="difficulty">Filter by</label>
-            <InputSelect class="form-control"
-                         Value="selectedDifficulty"
-                         ValueExpression="@(() => selectedDifficulty)" 
-                         ValueChanged="@((Difficulty newValue) => OnDifficultyChanged(newValue))">
-                @foreach (Difficulty difficulty in Enum.GetValues(typeof(Difficulty)))
-                {
-                    <option value="@difficulty">@difficulty</option>
-                }
-            </InputSelect>
-        </div>
-    </EditForm>
-
-    <table class="table mt-3">
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Category</th>
-                <th>Difficulty</th>
-                <th>Score</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var gameScore in filteredGameScores)
-            {
-                <tr>
-                    <td>@gameScore.Username</td>
-                    <td>@gameScore.CategoryName</td>
-                    <td>@gameScore.Difficulty.ToString()</td>
-                    <td>@gameScore.Score</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <MatTable Items="@gameScores"
+              LoadInitialData="true"
+              FilterByColumnName="Difficulty"
+              DebounceMilliseconds="150">
+        <MatTableHeader>
+            <th>Username</th>
+            <th>Category</th>
+            <th>Difficulty</th>
+            <th>Score</th>
+        </MatTableHeader>
+        <MatTableRow>
+            <td>@context.Username</td>
+            <td>@context.CategoryName</td>
+            <td>@context.Difficulty.ToString()</td>
+            <td>@context.Score</td>
+        </MatTableRow>
+    </MatTable>
 }
 
 @code {
     private GameScore[] gameScores;
-    private GameScore[] filteredGameScores;
     private Difficulty selectedDifficulty;
 
     protected override async Task OnInitializedAsync()
@@ -67,7 +47,6 @@ else
                 Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 gameScores = await Http.GetJsonAsync<GameScore[]>(ApiConstants.ApiUrl + "Statistics");
                 selectedDifficulty = Difficulty.All;
-                filteredGameScores = gameScores;
             }
             catch (Exception ex)
             {
@@ -77,12 +56,5 @@ else
                 }
             }
         }
-    }
-
-    protected void OnDifficultyChanged(Difficulty difficulty)
-    {
-        selectedDifficulty = difficulty;
-        filteredGameScores = selectedDifficulty == Difficulty.All ? gameScores : gameScores.Where(c => c.Difficulty == difficulty).ToArray();
-        StateHasChanged();
     }
 }

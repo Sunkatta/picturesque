@@ -15,65 +15,68 @@
 else
 {
     <div class="row justify-content-end mr-3 mt-4">
-        <button class="btn btn-primary"
-                @onclick="OnAddCategory">
+        <MatButton Outlined="true" @onclick="OnAddCategory">
             @(addingCategory ? "Cancel" : "Add new category")
-        </button>
+        </MatButton>
     </div>
     @if (addingCategory)
     {
-        <EditForm Model="category" OnValidSubmit="AddCategory">
+        <EditForm Model="category" OnValidSubmit="AddCategory" class="mt-2 mb-2">
             <DataAnnotationsValidator />
-            <ValidationSummary />
 
             <div class="form-group">
-                <label for="name">Category Name</label>
-                <InputText id="name" class="form-control" @bind-Value="category.Name"></InputText>
+                <MatTextField Class="w-100"
+                              Required="true"
+                              Label="Category Name"
+                              Outlined="true"
+                              @bind-Value="category.Name">
+                </MatTextField>
+                <ValidationMessage For="@(() => category)"></ValidationMessage>
             </div>
             <p class="text-danger">@errorMessage</p>
-            <button type="submit" class="btn btn-outline-success mt-2 w-100">Create Category</button>
+            <MatButton Type="submit" Class="mt-2 w-100" Outlined="true">Create Category</MatButton>
         </EditForm>
     }
     @if (editingCategory)
     {
-        <EditForm Model="category" OnValidSubmit="EditCategory">
+        <EditForm Model="category" OnValidSubmit="EditCategory" class="mt-2 mb-2">
             <DataAnnotationsValidator />
             <ValidationSummary />
 
             <div class="form-group">
-                <label for="name">Category Name</label>
-                <InputText id="name" class="form-control" @bind-Value="category.Name"></InputText>
+                <MatTextField Class="w-100"
+                              Required="true"
+                              Label="Category Name"
+                              Outlined="true"
+                              @bind-Value="category.Name">
+                </MatTextField>
             </div>
             <p class="text-danger">@errorMessage</p>
-            <button type="submit" class="btn btn-outline-success mt-2 w-100">Edit Category</button>
+            <MatButton Type="submit" Class="mt-2 w-100" Outlined="true">Edit Category</MatButton>
         </EditForm>
     }
-    <table class="table mt-2">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var category in categories)
-            {
-                <tr>
-                    <td>@category.Id</td>
-                    <td>@category.Name</td>
-                    <td>
-                        <button class="btn btn-primary" @onclick="() => OnEditCategory(category.Id)">
-                            Edit
-                        </button>
-                        <button class="btn btn-outline-danger" @onclick="() => DeleteCategory(category.Id)">
-                            Delete
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <MatTable Items="@categories"
+              LoadInitialData="true"
+              FilterByColumnName="Name"
+              DebounceMilliseconds="150">
+        <MatTableHeader>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Actions</th>
+        </MatTableHeader>
+        <MatTableRow>
+            <td>@context.Id</td>
+            <td>@context.Name</td>
+            <td>
+                <button class="btn btn-primary" @onclick="() => OnEditCategory(context.Id)">
+                    Edit
+                </button>
+                <button class="btn btn-outline-danger" @onclick="() => DeleteCategory(context.Id)">
+                    Delete
+                </button>
+            </td>
+        </MatTableRow>
+    </MatTable>
 }
 
 @code {
