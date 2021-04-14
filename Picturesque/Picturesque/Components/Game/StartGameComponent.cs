@@ -3,6 +3,7 @@ using Picturesque.Models;
 using Picturesque.Models.Constants;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ namespace Picturesque.Components
         public bool gameHasEnded = false;
         public bool hasWon = false;
         public bool hasLost = false;
+        public bool isHelpBeingUsed = false;
 
         public GameOptions gameOptions;
         public Picture selectedPicture = new Picture();
@@ -74,6 +76,41 @@ namespace Picturesque.Components
             }
         }
 
+        protected async Task Help()
+        {
+            isHelpBeingUsed = true;
+            List<Picture> hiddenPictures = game.Pictures.Where(pic => !pic.IsVisible).ToList();
+
+            switch (game.Difficulty)
+            {
+                case 0:
+                    counter -= 10;
+                    break;
+                case 1:
+                    counter -= 20;
+                    break;
+                case 2:
+                    counter -= 30;
+                    break;
+                default:
+                    break;
+            }
+
+            foreach (Picture picture in hiddenPictures)
+            {
+                picture.IsVisible = true;
+            }
+
+            await Task.Delay(1000);
+
+            foreach (Picture picture in hiddenPictures)
+            {
+                picture.IsVisible = false;
+            }
+
+            isHelpBeingUsed = false;
+        }
+
         private void SetCounter()
         {
             switch (game.Difficulty)
@@ -122,7 +159,7 @@ namespace Picturesque.Components
 
         private async Task<Picture> ComparePictures(Picture picture)
         {
-            await Task.Delay(500);
+            await Task.Delay(250);
             if (String.Compare(picture.Img2Base64.ToLower(), selectedPicture.Img2Base64.ToLower()) == 0)
             {
                 HandleSuccess();
@@ -165,6 +202,13 @@ namespace Picturesque.Components
             score = 0;
             numberOfMistakesAllowed = 10;
             numberOfPicturesVisible = 0;
+
+            if (timer != null)
+            {
+                timer.Dispose();
+            }
+            
+            StateHasChanged();
         }
     }
 }
