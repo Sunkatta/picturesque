@@ -215,13 +215,6 @@ app {
     outline: none;
 }
 
-/*  SECTIONS  */
-.section {
-    clear: both;
-    padding: 0px;
-    margin: 0px;
-}
-
 /*  COLUMN SETUP  */
 .col {
     display: block;
