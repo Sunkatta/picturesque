@@ -12,17 +12,25 @@ namespace Picturesque.Components
 {
     public class StartGameComponent : ComponentBase
     {
+        public const int EASY_MODE_SECONDS = 60;
+        public const int EASY_MODE_MISTAKES_ALLOWED = 10;
+        public const int MEDIUM_MODE_SECONDS = 120;
+        public const int MEDIUM_MODE_MISTAKES_ALLOWED = 32;
+        public const int HARD_MODE_SECONDS = 900;
+        public const int HARD_MODE_MISTAKES_ALLOWED = 50;
+
         public int numberOfSelectedPictures = 0;
         public int numberOfPicturesVisible = 0;
         public int score = 0;
         public int numberOfMistakesAllowed;
         public int counter;
 
-        public bool gameHasStarted = false;
-        public bool gameHasEnded = false;
-        public bool hasWon = false;
-        public bool hasLost = false;
-        public bool isHelpBeingUsed = false;
+        public bool gameHasStarted;
+        public bool gameHasEnded;
+        public bool hasWon;
+        public bool hasLost;
+        public bool isHelpBeingUsed;
+        public bool isHelpUsed;
 
         public GameOptions gameOptions;
         public Picture selectedPicture = new Picture();
@@ -78,6 +86,7 @@ namespace Picturesque.Components
 
         protected async Task Help()
         {
+            isHelpUsed = true;
             isHelpBeingUsed = true;
             List<Picture> hiddenPictures = game.Pictures.Where(pic => !pic.IsVisible).ToList();
 
@@ -116,17 +125,17 @@ namespace Picturesque.Components
             switch (game.Difficulty)
             {
                 case 0:
-                    counter = 60;
-                    numberOfMistakesAllowed = 10;
+                    counter = EASY_MODE_SECONDS;
+                    numberOfMistakesAllowed = EASY_MODE_MISTAKES_ALLOWED;
                     break;
                 case 1:
-                    counter = 120;
-                    numberOfMistakesAllowed = 32;
+                    counter = MEDIUM_MODE_SECONDS;
+                    numberOfMistakesAllowed = MEDIUM_MODE_MISTAKES_ALLOWED;
                     break;
                 // TOOD: Tweak Hard mode
                 case 2:
-                    counter = 900;
-                    numberOfMistakesAllowed = 50;
+                    counter = HARD_MODE_SECONDS;
+                    numberOfMistakesAllowed = HARD_MODE_MISTAKES_ALLOWED;
                     break;
                 default:
                     break;
@@ -182,7 +191,7 @@ namespace Picturesque.Components
             {
                 hasWon = true;
                 gameHasEnded = true;
-                counter = 0;
+                timer.Dispose();
             }
         }
 
@@ -199,8 +208,8 @@ namespace Picturesque.Components
             gameHasEnded = false;
             hasWon = false;
             hasLost = false;
+            isHelpUsed = false;
             score = 0;
-            numberOfMistakesAllowed = 10;
             numberOfPicturesVisible = 0;
 
             if (timer != null)

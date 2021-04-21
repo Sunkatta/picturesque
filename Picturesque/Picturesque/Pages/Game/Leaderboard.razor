@@ -19,16 +19,22 @@ else
               FilterByColumnName="Difficulty"
               DebounceMilliseconds="150">
         <MatTableHeader>
-            <th>Username</th>
+            <th style="width: 25%;">Username</th>
             <th>Category</th>
             <th>Difficulty</th>
             <th>Score</th>
+            <th>Mistakes</th>
+            <th style="width: 10%;">Time</th>
+            <th>Help Used</th>
         </MatTableHeader>
         <MatTableRow>
             <td>@context.Username</td>
             <td>@context.CategoryName</td>
             <td>@context.Difficulty.ToString()</td>
             <td>@context.Score</td>
+            <td>@context.NumberOfMistakes</td>
+            <td>@context.CompletedInSeconds sec.</td>
+            <td>@(context.IsHelpUsed ? "Yes" : "No")</td>
         </MatTableRow>
     </MatTable>
 }

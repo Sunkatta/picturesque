@@ -138,7 +138,35 @@ else
         {
             var context = await tokenProvider.GetAuthenticationStateAsync();
             var userId = context.User.Claims.FirstOrDefault(c => c.Type.ToString() == "sub").Value;
-            GameScore gc = new GameScore(userId, game.CategoryId, game.Difficulty, score);
+            int completedInSeconds = 0;
+            int mistakesMade = 0;
+
+            switch (game.Difficulty)
+            {
+                case 0:
+                    completedInSeconds = EASY_MODE_SECONDS - counter;
+                    mistakesMade = EASY_MODE_MISTAKES_ALLOWED - numberOfMistakesAllowed;
+                    break;
+                case 1:
+                    completedInSeconds = MEDIUM_MODE_SECONDS - counter;
+                    mistakesMade = MEDIUM_MODE_MISTAKES_ALLOWED - numberOfMistakesAllowed;
+                    break;
+                case 2:
+                    completedInSeconds = HARD_MODE_SECONDS - counter;
+                    mistakesMade = HARD_MODE_MISTAKES_ALLOWED - numberOfMistakesAllowed;
+                    break;
+                default:
+                    break;
+            }
+
+            GameScore gc = new GameScore(
+                userId,
+                game.CategoryId,
+                game.Difficulty,
+                score,
+                completedInSeconds,
+                mistakesMade,
+                isHelpUsed);
 
             HttpClient client = new HttpClient();
             await client.PostJsonAsync(ApiConstants.ApiUrl + "Statistics/CreateGameScore", gc);
