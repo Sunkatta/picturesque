@@ -38,13 +38,14 @@ namespace PicturesqueAPI.Controllers.Public
         {
             try
             {
-                GameScore gc =
-                    new GameScore(
-                        entry.UserId,
-                        entry.CategoryId,
-                        entry.Score,
-                        (Difficulty)entry.Difficulty
-                    );
+                GameScore gc = new GameScore(
+                    entry.UserId,
+                    entry.CategoryId,
+                    entry.Score,
+                    entry.CompletedInSeconds,
+                    entry.NumberOfMistakes,
+                    (Difficulty)entry.Difficulty,
+                    entry.IsHelpUsed);
 
                 await _statisticsServiceManager.CreateGameScoreAsync(gc);
 

@@ -1,7 +1,5 @@
 ﻿using Picturesque.Common;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Picturesque.Domain
 {
@@ -15,14 +13,20 @@ namespace Picturesque.Domain
             string userId,
             string categoryId,
             int score,
+            int completedInSeconds,
+            int numberOfMistakes,
             Difficulty difficulty,
-            CustomId id = null
-        )
+            bool isHelpUsed,
+            CustomId id = null)
         {
             UserId = userId;
             CategoryId = categoryId;
             Score = score;
+            CompletedInSeconds = completedInSeconds;
             Difficulty = difficulty;
+            IsHelpUsed = isHelpUsed;
+            NumberOfMistakes = numberOfMistakes;
+            CreatedOn = DateTime.UtcNow;
             _id = id ?? new CustomId();
         }
 
@@ -32,9 +36,20 @@ namespace Picturesque.Domain
             private set { this._id = new CustomId(new Guid(value)); }
         }
 
-        public string UserId { get; set; }
-        public string CategoryId { get; set; }
-        public int Score { get; set; }
-        public Difficulty Difficulty { get; set; }
+        public string UserId { get; private set; }
+
+        public string CategoryId { get; private set; }
+
+        public int Score { get; private set; }
+
+        public int CompletedInSeconds { get; private set; }
+
+        public Difficulty Difficulty { get; private set; }
+
+        public bool IsHelpUsed { get; private set; }
+
+        public int NumberOfMistakes { get; private set; }
+
+        public DateTime CreatedOn { get; private set; }
     }
 }

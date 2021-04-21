@@ -41,7 +41,16 @@ namespace Picturesque.Services
             {
                 var user = await _userServiceManager.GetRawUserByIdAsync(gc.UserId);
                 var category = await _categoryServiceManager.GetRawCategoryById(gc.CategoryId);
-                gameScoresViews.Add(new GameScoreView(user.UserName, gc.Difficulty, category.Name, gc.Score));
+                gameScoresViews.Add(
+                    new GameScoreView(
+                        user.UserName,
+                        gc.Difficulty,
+                        category.Name,
+                        gc.Score,
+                        gc.NumberOfMistakes,
+                        gc.CompletedInSeconds,
+                        gc.IsHelpUsed)
+                    );
             }
 
             return gameScoresViews.OrderByDescending(gc => gc.Score);
