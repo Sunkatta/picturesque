@@ -1,8 +1,5 @@
 ﻿@page "/leaderboard"
-@using System.Net.Http.Headers;
-@using Picturesque.Models.Enums; 
-@using Picturesque.Models.Constants; 
-@inject HttpClient Http
+@inherits LeaderboardComponent; 
 @inject TokenAuthenticationStateProvider TokenProvider
 @attribute [Authorize]
 
@@ -40,19 +37,14 @@ else
 }
 
 @code {
-    private GameScore[] gameScores;
-    private Difficulty selectedDifficulty;
-
     protected override async Task OnInitializedAsync()
     {
-        var token = await TokenProvider.GetTokenAsync();
+        token = await TokenProvider.GetTokenAsync();
         if (token != null)
         {
             try
             {
-                Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                gameScores = await Http.GetJsonAsync<GameScore[]>(ApiConstants.ApiUrl + "Statistics");
-                selectedDifficulty = Difficulty.All;
+                await GetLeaderboard();
             }
             catch (Exception ex)
             {
@@ -61,6 +53,7 @@ else
                     await TokenProvider.SetTokenAsync(null);
                 }
             }
+
         }
     }
 }
