@@ -1,7 +1,5 @@
 ﻿@page "/categories"
-@using System.Net.Http.Headers;
-@using Picturesque.Models.Constants;
-@inject HttpClient Http;
+@inherits CategoryComponent;
 @inject TokenAuthenticationStateProvider TokenProvider;
 @inject NavigationManager UriHelper;
 @attribute [Authorize]
@@ -60,7 +58,7 @@ else
               FilterByColumnName="Name"
               DebounceMilliseconds="150">
         <MatTableHeader>
-            <th>Id</th>
+            <th style="width: 45%;">Id</th>
             <th>Name</th>
             <th>Actions</th>
         </MatTableHeader>
@@ -80,15 +78,11 @@ else
 }
 
 @code {
-    private Category[] categories;
-    private Category category = new Category();
-    private bool addingCategory = false;
-    private bool editingCategory = false;
-    private string errorMessage;
+
 
     protected override async Task OnInitializedAsync()
     {
-        var token = await TokenProvider.GetTokenAsync();
+        token = await TokenProvider.GetTokenAsync();
         var isAdmin = (await TokenProvider.GetAuthenticationStateAsync())
             .User
             .Claims
@@ -98,8 +92,8 @@ else
         {
             try
             {
-                Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                categories = await Http.GetJsonAsync<Category[]>(ApiConstants.ApiUrl + "Category");
+                client = new HttpClient();
+                await GetCategories();
             }
             catch (Exception ex)
             {
@@ -113,68 +107,5 @@ else
         {
             UriHelper.NavigateTo("startgame");
         }
-    }
-
-    protected void OnAddCategory()
-    {
-        addingCategory = !addingCategory;
-        errorMessage = string.Empty;
-        editingCategory = false;
-        category = new Category();
-    }
-
-    protected void OnEditCategory(string categoryId)
-    {
-        editingCategory = !editingCategory;
-        addingCategory = false;
-        category = categories.FirstOrDefault(c => c.Id == categoryId);
-    }
-
-    protected async Task AddCategory()
-    {
-        try
-        {
-            await Http.PostJsonAsync(ApiConstants.ApiUrl + "Category/CreateCategory", category);
-            categories = null;
-            categories = await Http.GetJsonAsync<Category[]>(ApiConstants.ApiUrl + "Category");
-            addingCategory = false;
-            category = new Category();
-        }
-        catch (Exception ex)
-        {
-            if (ex.Message.Contains("400"))
-            {
-                errorMessage = "Category already exists";
-            }
-        }
-
-    }
-
-    protected async Task EditCategory()
-    {
-        try
-        {
-            await Http.PostJsonAsync(ApiConstants.ApiUrl + "Category/UpdateCategory", category);
-            categories = null;
-            categories = await Http.GetJsonAsync<Category[]>(ApiConstants.ApiUrl + "Category");
-            editingCategory = false;
-            category = new Category();
-        }
-        catch (Exception ex)
-        {
-            if (ex.Message.Contains("400"))
-            {
-                errorMessage = "Category already exists";
-            }
-        }
-
-    }
-
-    protected async Task DeleteCategory(string categoryId)
-    {
-        category = categories.FirstOrDefault(c => c.Id == categoryId);
-        categories =
-            await Http.PostJsonAsync<Category[]>(ApiConstants.ApiUrl + "Category/DeleteCategory", category);
-        category = new Category();
     }
 }
