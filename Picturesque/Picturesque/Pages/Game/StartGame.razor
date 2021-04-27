@@ -17,7 +17,6 @@ else
             <div class="row">
                 <div class="form-group col-md-4">
                     <MatSelect Label="Select Category" Class="form-control mb-1" Outlined="true" @bind-Value="gameOptionsInputModel.Category">
-                        <MatOption Value=""></MatOption>
                         @foreach (var category in gameOptions.Categories)
                         {
                             if (category.Name != "No Category")
@@ -30,7 +29,6 @@ else
                 </div>
                 <div class="form-group col-md-4">
                     <MatSelect Label="Select Difficulty" Class="form-control mb-1" Outlined="true" @bind-Value="gameOptionsInputModel.Difficulty">
-                        <MatOption Value=""></MatOption>
                         @foreach (var difficulty in gameOptions.Difficulties)
                         {
                             <MatOption Value="@difficulty">@difficulty</MatOption>

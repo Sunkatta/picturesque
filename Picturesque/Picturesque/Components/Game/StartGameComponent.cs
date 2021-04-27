@@ -35,7 +35,7 @@ namespace Picturesque.Components
         public GameOptions gameOptions;
         public Picture selectedPicture = new Picture();
         public GameOptionsInputModel gameOptionsInputModel = new GameOptionsInputModel();
-        public Game game = new Game();
+        public Models.Game game = new Models.Game();
 
         private Timer timer;
 
@@ -52,7 +52,7 @@ namespace Picturesque.Components
         {
             CleanUp();
             HttpClient client = new HttpClient();
-            game = await client.PostJsonAsync<Game>(
+            game = await client.PostJsonAsync<Models.Game>(
                     ApiConstants.ApiUrl + "Game/StartGame",
                     gameOptionsInputModel
                     );
