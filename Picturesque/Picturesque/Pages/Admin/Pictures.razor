@@ -1,8 +1,7 @@
 ﻿@page "/pictures"
+@inherits PictureComponent;
 @using System.Net.Http.Headers;
 @using Picturesque.Models.Constants;
-@using Newtonsoft.Json;
-@using System.Text;
 @inject HttpClient Http;
 @inject TokenAuthenticationStateProvider TokenProvider;
 @inject NavigationManager UriHelper;
@@ -42,9 +41,9 @@ else
             <div class="form-group row mt-4">
                 <MatSelect Label="Select Category" Outlined="true" @bind-Value="picture.CategoryId">
                     @foreach (var category in categories)
-                    {
+                            {
                         <MatOption Value="@category.Id">@category.Name</MatOption>
-                    }
+                            }
                 </MatSelect>
             </div>
             <div class="form-group row">
@@ -73,17 +72,12 @@ else
 }
 
 @code {
-    private List<Picture> pictures;
-    private Picture picture = new Picture();
-    private Category[] categories;
-    private bool addingPicture = false;
-    private bool editingPicture = false;
     ElementReference inputTypeFileElement;
     IFileReaderRef fileReaderReference;
 
     protected override async Task OnInitializedAsync()
     {
-        var token = await TokenProvider.GetTokenAsync();
+        token = await TokenProvider.GetTokenAsync();
         var isAdmin = (await TokenProvider.GetAuthenticationStateAsync())
             .User
             .Claims
@@ -93,9 +87,8 @@ else
         {
             try
             {
-                Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                pictures = await Http.GetJsonAsync<List<Picture>>(ApiConstants.ApiUrl + "Picture");
-                categories = await Http.GetJsonAsync<Category[]>(ApiConstants.ApiUrl + "Category");
+                client = new HttpClient();
+                await GetPicturesAndCategories();
             }
             catch (Exception ex)
             {
@@ -116,18 +109,6 @@ else
         fileReaderReference = fileReaderService.CreateReference(inputTypeFileElement);
     }
 
-    protected void OnAddPicture()
-    {
-        addingPicture = !addingPicture;
-        editingPicture = false;
-    }
-
-    protected void OnEditPicture(string pictureId)
-    {
-        editingPicture = !editingPicture;
-        picture = pictures.FirstOrDefault(c => c.Id == pictureId);
-    }
-
     protected async Task UploadFiles()
     {
         var multipartFormDataContent = new MultipartFormDataContent();
@@ -139,35 +120,9 @@ else
                 (await file.ReadFileInfoAsync()).Name);
         }
 
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var res = await Http.PostAsync(ApiConstants.ApiUrl + "Picture/UploadPictures",
-                content: multipartFormDataContent);
-        pictures = await Http.GetJsonAsync<List<Picture>>(ApiConstants.ApiUrl + "Picture");
-    }
-
-    protected async Task AddCategoryToPicture()
-    {
-        Picture oldPic = picture;
-        var response = await Http.PostAsync(
-                ApiConstants.ApiUrl + "Picture/UpdatePictureCategory",
-                new StringContent(JsonConvert.SerializeObject(picture), Encoding.UTF8, "application/json"));
-
-        if (response.IsSuccessStatusCode)
-        {
-            picture.CategoryName = categories.FirstOrDefault(x => x.Id == picture.CategoryId).Name;
-            pictures[pictures.FindIndex(i => i.Id == picture.Id)] = picture;
-            editingPicture = false;
-            picture = new Picture();
-        }
-        else
-        {
-            pictures[pictures.FindIndex(i => i.Id == picture.Id)] = oldPic;
-        }
-    }
-
-    protected async Task DeletePicture(string pictureId)
-    {
-        picture = pictures.FirstOrDefault(c => c.Id == pictureId);
-        pictures = await Http.PostJsonAsync<List<Picture>>(ApiConstants.ApiUrl + "Picture/DeletePicture", picture);
-        picture = new Picture();
+            content: multipartFormDataContent);
+        pictures = await GetPictures();
     }
 }
