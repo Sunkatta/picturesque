@@ -1,6 +1,4 @@
 ﻿@page "/users"
-@using System.Net.Http.Headers;
-@using Picturesque.Models.Constants;
 @inject HttpClient Http;
 @inject TokenAuthenticationStateProvider TokenProvider;
 @inject NavigationManager UriHelper;
@@ -20,7 +18,7 @@ else
               FilterByColumnName="Email"
               DebounceMilliseconds="150">
         <MatTableHeader>
-            <th>Id</th>
+            <th style="width: 60%;">Id</th>
             <th>Email</th>
             <th>Username</th>
             <th>Blocked</th>
@@ -55,9 +53,8 @@ else
         {
             try
             {
-                Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var response = await Http.GetJsonAsync<User[]>(ApiConstants.ApiUrl + "User");
-                users = response.ToList();
+                client = new HttpClient();
+                await GetUsers();
             }
             catch (Exception ex)
             {
