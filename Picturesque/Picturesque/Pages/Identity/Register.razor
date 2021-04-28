@@ -5,9 +5,9 @@
     <div class="container">
         @if (hasSuccessfullyRegistered)
         {
-            <MatH3 class="text-center">Account Successfully Created!</MatH3>
+            <MatH4 Class="text-center mb-3 identity-text-color">Account Successfully Created!</MatH4>
             <div class="text-center form-holder w-50">
-                <MatH4>A confirmation email has been sent to</MatH4>
+                <MatH6 Class="identity-text-color">A confirmation email has been sent to</MatH6>
                 <br />
                 <MatH4>@registerInputModel.Email</MatH4>
                 <MatButton type="submit" Class="mt-2 w-100" Link="/login" Outlined="true">
@@ -17,12 +17,10 @@
         }
         else
         {
-            <MatH3 class="text-center">Create an Account</MatH3>
+            <MatH4 class="text-center mb-3 identity-text-color">Create an Account</MatH4>
             <div class="form-holder">
                 <EditForm Model="@registerInputModel" OnValidSubmit="@HandleRegister">
                     <DataAnnotationsValidator />
-                    @*<ValidationSummary />*@
-
                     <p class="text-danger text-center">@errorMessage</p>
 
                     <div class="form-group">
@@ -69,14 +67,13 @@
                         <ValidationMessage For="@(() => registerInputModel.ConfirmPassword)"></ValidationMessage>
                     </div>
                     <div class="form-group text-center">
-                        <MatButton Link="/login">
-                            Already have an account? Go to Login
-                        </MatButton>
-                    </div>
-                    <div class="text-center">
                         <MatButton Type="submit" Class="w-100" Outlined="true">Register</MatButton>
                     </div>
-
+                    <div class="text-center">
+                        <MatButtonLink Href="/login">
+                            Already have an account? Go to Login
+                        </MatButtonLink>
+                    </div>
                 </EditForm>
             </div>
         }

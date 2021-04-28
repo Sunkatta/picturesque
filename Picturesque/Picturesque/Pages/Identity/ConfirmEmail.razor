@@ -12,11 +12,11 @@
     {
         @if (isEmailConfirmed)
         {
-            <MatH3>Email successfully confirmed!</MatH3>
+            <MatH5 Class="identity-text-color mb-3">Email successfully confirmed!</MatH5>
         }
         else
         {
-            <MatH3>The confirmation link is either invalid or has expired!</MatH3>
+            <MatH5 Class="identity-text-color mb-3">The confirmation link is either invalid or has expired!</MatH5>
         }
         <MatButton type="submit" Class="w-100" Link="/login" Outlined="true">
             To Login
@@ -45,6 +45,7 @@
 
         if (!string.IsNullOrEmpty(Email) && !string.IsNullOrEmpty(ConfirmationCode))
         {
+            client = new HttpClient();
             isEmailConfirmed = await ConfirmEmail();
         }
 

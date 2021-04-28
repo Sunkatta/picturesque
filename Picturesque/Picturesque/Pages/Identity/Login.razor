@@ -6,7 +6,7 @@
 
 <div class="login-register-holder">
     <div class="container">
-        <MatH3 Class="text-center">Login</MatH3>
+        <MatH4 Class="text-center mb-3 identity-text-color">Login</MatH4>
         <div class="form-holder">
             <EditForm Model="@loginInputModel" OnValidSubmit="@HandleLogin">
                 <DataAnnotationsValidator />
@@ -34,20 +34,16 @@
                     </MatTextField>
                     <ValidationMessage For="@(() => loginInputModel.Password)"></ValidationMessage>
                 </div>
-                <div class="row form-group">
-                    <div class="col-md-6">
-                        <NavLink class="ml-md-auto" href="Account/ForgotPassword">
-                            I forgot my password
-                        </NavLink>
-                    </div>
-                    <div class="col-md-6 text-right">
-                        <NavLink class="ml-md-auto" href="register">
-                            Create an account
-                        </NavLink>
-                    </div>
+                <div class="form-group text-center">
+                    <MatButton type="submit" Class="w-100" Outlined="true">Login</MatButton>
                 </div>
                 <div class="text-center">
-                    <MatButton type="submit" Class="w-100" Outlined="true">Login</MatButton>
+                    <MatButtonLink Style="font-size: 0.74em;" Href="Account/ForgotPassword">
+                        I forgot my password
+                    </MatButtonLink>
+                    <MatButtonLink Style="font-size: 0.74em;" Href="register">
+                        Create an account
+                    </MatButtonLink>
                 </div>
             </EditForm>
         </div>

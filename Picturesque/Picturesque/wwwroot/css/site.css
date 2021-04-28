@@ -211,6 +211,10 @@ app {
     outline: none;
 }
 
+.identity-text-color {
+    color: rgba(5,22,61,1);
+}
+
 .valid.modified:not([type=checkbox]) {
     outline: none;
 }

@@ -4,14 +4,14 @@
 <div class="text-center form-holder w-50">
     @if (hasEmailBeenSent)
     {
-        <MatH3 Class="text-center">Check the inbox of @emailInputModel.Email!</MatH3>
-        <MatButton type="submit" Class="w-100" Link="/login" Outlined="true">
+        <MatH5 Class="text-center mb-3 identity-text-color">Check the inbox of @emailInputModel.Email!</MatH5>
+        <MatButton Type="submit" Class="w-100" Link="/login" Outlined="true">
             To Login
         </MatButton>
     }
     else
     {
-        <MatH5>Your account is not confirmed and you did not receive any email? No worries, enter your email below and we'll send another one.</MatH5>
+        <MatH6 Class="identity-text-color mb-3">Your account is not confirmed and you did not receive any email? No worries, enter your email below and we'll send another one.</MatH6>
         <EditForm Model="@emailInputModel" OnValidSubmit="@HandleResendEmail">
             <DataAnnotationsValidator />
             <ValidationSummary />
