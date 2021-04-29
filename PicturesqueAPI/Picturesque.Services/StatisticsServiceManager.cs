@@ -49,7 +49,8 @@ namespace Picturesque.Services
                         gc.Score,
                         gc.NumberOfMistakes,
                         gc.CompletedInSeconds,
-                        gc.IsHelpUsed)
+                        gc.IsHelpUsed,
+                        gc.CreatedOn)
                     );
             }
 

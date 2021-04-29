@@ -1,4 +1,6 @@
-﻿namespace Picturesque.Domain
+﻿using System;
+
+namespace Picturesque.Domain
 {
     public sealed class GameScoreView
     {
@@ -9,7 +11,8 @@
             int score,
             int numberOfMistakes,
             int completedInSeconds,
-            bool isHelpUsed)
+            bool isHelpUsed,
+            DateTime createdOn)
         {
             Username = username;
             Difficulty = difficulty;
@@ -18,6 +21,7 @@
             NumberOfMistakes = numberOfMistakes;
             CompletedInSeconds = completedInSeconds;
             IsHelpUsed = isHelpUsed;
+            CreatedOn = createdOn;
         }
 
         public string Username { get; set; }
@@ -33,5 +37,7 @@
         public int CompletedInSeconds { get; set; }
 
         public bool IsHelpUsed { get; set; }
+
+        public DateTime CreatedOn { get; set; }
     }
 }
