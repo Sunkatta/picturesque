@@ -1,4 +1,5 @@
 ﻿using Picturesque.Models.Enums;
+using System;
 
 namespace Picturesque.Models
 {
@@ -13,7 +14,8 @@ namespace Picturesque.Models
             int score,
             int completedInSeconds,
             int numberOfMistakes,
-            bool isHelpUsed)
+            bool isHelpUsed,
+            DateTime? createdOn)
         {
             UserId = userId;
             CategoryId = categoryId;
@@ -22,6 +24,7 @@ namespace Picturesque.Models
             CompletedInSeconds = completedInSeconds;
             NumberOfMistakes = numberOfMistakes;
             IsHelpUsed = isHelpUsed;
+            CreatedOn = createdOn;
         }
 
         public string UserId { get; set; }
@@ -41,5 +44,7 @@ namespace Picturesque.Models
         public int NumberOfMistakes { get; set; }
 
         public bool IsHelpUsed { get; set; }
+
+        public DateTime? CreatedOn { get; set; }
     }
 }

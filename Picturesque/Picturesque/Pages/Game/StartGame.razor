@@ -164,7 +164,8 @@ else
                 score,
                 completedInSeconds,
                 mistakesMade,
-                isHelpUsed);
+                isHelpUsed,
+                null);
 
             HttpClient client = new HttpClient();
             await client.PostJsonAsync(ApiConstants.ApiUrl + "Statistics/CreateGameScore", gc);
