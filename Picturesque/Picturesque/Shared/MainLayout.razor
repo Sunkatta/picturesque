@@ -8,19 +8,21 @@
 </AuthorizeView>
 
 <div class="main">
-    <div class="top-row px-4" style="z-index: 9999;">
+    <div class="top-row px-4">
         <ul class="nav navbar">
             <AuthorizeView>
                 <Authorized>
                     <li class="nav-item px-3">
-                        Hello, @context.User.Claims.FirstOrDefault(c => c.Type.ToString() == "unique_name").Value!
-                    </li>
-                    <li class="nav-item px-3">
-                        <button 
-                                class="btn btn-sm btn-outline-light"
-                                @onclick="@(() => authStateProvider.SetTokenAsync(null))">
-                            Logout
-                        </button>
+                        <MatButton Style="color: white" OnClick="@OnClick" RefBack="@buttonForwardRef">
+                            Hello, @context.User.Claims.FirstOrDefault(c => c.Type.ToString() == "unique_name").Value
+                            <span class="oi oi-caret-bottom"></span>
+                        </MatButton>
+                        <MatMenu @ref="Menu" TargetForwardRef="@buttonForwardRef">
+                            <MatList>
+                                <MatListItem Href="/profile/0">Profile</MatListItem>
+                                <MatListItem OnClick="@(() => authStateProvider.SetTokenAsync(null))">Logout</MatListItem>
+                            </MatList>
+                        </MatMenu>
                     </li>
                 </Authorized>
                 <NotAuthorized>
@@ -43,3 +45,15 @@
         @Body
     </div>
 </div>
+
+@code
+{
+    ForwardRef buttonForwardRef = new ForwardRef();
+    BaseMatMenu Menu;
+
+    public void OnClick(MouseEventArgs e)
+    {
+        this.Menu.OpenAsync();
+    }
+
+}

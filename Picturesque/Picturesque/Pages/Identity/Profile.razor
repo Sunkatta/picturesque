@@ -1,0 +1,18 @@
+﻿@page "/profile/{TabIndex:int}";
+@inherits ProfileComponent;
+@attribute [Authorize]
+
+<h3>Profile</h3>
+
+<MatTabGroup @bind-ActiveIndex="tabIndex">
+    <MatTab Label="Profile Information">
+        <ChildContent>
+            <p>Profile Info</p>
+        </ChildContent>
+    </MatTab>
+    <MatTab Label="My Statistics">
+        <ChildContent>
+            <p>My Stats</p>
+        </ChildContent>
+    </MatTab>
+</MatTabGroup>
