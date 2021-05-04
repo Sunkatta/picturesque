@@ -10,8 +10,6 @@ namespace Picturesque.Domain
         
         Task<string> GenerateJWTAsync(LoginUserEntry login);
         
-        Task<User> GetRawUserByEmailAsync(string email);
-        
         Task<User> GetRawUserByIdAsync(string id);
 
         Task<IEnumerable<UserView>> GetAll();
@@ -33,5 +31,7 @@ namespace Picturesque.Domain
         Task ForgotPassword(string email);
 
         Task<bool> ResetPassword(string email, string newPassword, string code);
+
+        Task<ProfileView> GetProfile(string userId);
     }
 }

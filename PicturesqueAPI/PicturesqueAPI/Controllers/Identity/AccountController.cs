@@ -19,6 +19,21 @@ namespace PicturesqueAPI.Controllers.Identity
             _userManager = userManager;
         }
 
+        [HttpGet("Profile/{id}")]
+        [Authorize]
+        public async Task<IActionResult> Profile(string id)
+        {
+            try
+            {
+                ProfileView profile = await _userManager.GetProfile(id);
+                return Ok(profile);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterUserEntry entry)
         {
@@ -42,6 +57,7 @@ namespace PicturesqueAPI.Controllers.Identity
                 {
                     Email = entry.Email,
                     UserName = entry.Username,
+                    CreatedOn = DateTime.UtcNow,
                     IsAdmin = false,
                 };
 

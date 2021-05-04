@@ -125,14 +125,23 @@ namespace Picturesque.Services
             return users;
         }
 
-        public async Task<User> GetRawUserByEmailAsync(string email)
+        public async Task<ProfileView> GetProfile(string userId)
         {
-            User user =
-                    await _ctx.Users
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(u => u.Email == email);
+            User user = await _userManager.FindByIdAsync(userId);
+            ProfileView profile = new ProfileView();
 
-            return user != null ? user : null;
+            if (user != null)
+            {
+                profile = new ProfileView()
+                {
+                    Email = user.Email,
+                    Username = user.UserName,
+                    CreatedOn = user.CreatedOn,
+                    ProfilePic = user.ProfilePic,
+                };
+            }
+
+            return profile;
         }
 
         public async Task<User> GetRawUserByIdAsync(string id)
