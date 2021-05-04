@@ -1,0 +1,31 @@
+﻿@inherits ProfileInfoComponent;
+@inject TokenAuthenticationStateProvider TokenProvider;
+
+@if (profile == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="mt-4">
+        <MatH3>@profile.Username's Profile</MatH3>
+    </div>
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        token = await TokenProvider.GetTokenAsync();
+        string id = (await TokenProvider.GetAuthenticationStateAsync())
+            .User
+            .Claims
+            .FirstOrDefault(c => c.Type.ToString() == "sub")?.Value;
+
+        if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(token))
+        {
+            httpClient = new HttpClient();
+
+            await GetProfile(id);
+        }
+    }
+}

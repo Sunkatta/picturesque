@@ -2,12 +2,10 @@
 @inherits ProfileComponent;
 @attribute [Authorize]
 
-<h3>Profile</h3>
-
 <MatTabGroup @bind-ActiveIndex="tabIndex">
     <MatTab Label="Profile Information">
         <ChildContent>
-            <p>Profile Info</p>
+            <ProfileInfo></ProfileInfo>
         </ChildContent>
     </MatTab>
     <MatTab Label="My Statistics">
