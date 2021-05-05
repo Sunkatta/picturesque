@@ -4,14 +4,17 @@
 @inject NavigationManager UriHelper;
 @attribute [Authorize]
 
-<h1>Categories</h1>
-
 @if (categories == null)
 {
-    <p><em>Loading...</em></p>
+    <div class="row justify-content-end">
+        <div class="col-md-6">
+            <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Large" />
+        </div>
+    </div>
 }
 else
 {
+    <MatH2>Categories</MatH2>
     <div class="row justify-content-end mr-3 mt-4">
         <MatButton Outlined="true" @onclick="OnAddCategory">
             @(addingCategory ? "Cancel" : "Add new category")

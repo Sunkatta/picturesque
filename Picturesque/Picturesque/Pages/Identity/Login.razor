@@ -34,8 +34,18 @@
                     </MatTextField>
                     <ValidationMessage For="@(() => loginInputModel.Password)"></ValidationMessage>
                 </div>
-                <div class="form-group text-center">
-                    <MatButton type="submit" Class="w-100" Outlined="true">Login</MatButton>
+                <div class="form-group">
+                    @if (loading)
+                    {
+                        <div class="row col-md-12 offset-md-5">
+                            <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Medium" />
+                        </div>
+                        
+                    }
+                    else
+                    {
+                        <MatButton type="submit" Class="w-100" Outlined="true">Login</MatButton>
+                    }
                 </div>
                 <div class="text-center">
                     <MatButtonLink Style="font-size: 0.74em;" Href="Account/ForgotPassword">
@@ -54,11 +64,13 @@
     LoginInputModel loginInputModel = new LoginInputModel();
     string token;
     string errorMessage;
+    bool loading;
 
     protected async Task HandleLogin()
     {
         try
         {
+            loading = true;
             token = await client.PostJsonAsync<string>(ApiConstants.ApiUrl + "Account/Login", loginInputModel);
 
             if (token != null)
@@ -87,5 +99,6 @@
             StateHasChanged();
         }
 
+        loading = false;
     }
 }

@@ -8,14 +8,17 @@
 @inject IFileReaderService fileReaderService;
 @attribute [Authorize]
 
-<h3>Pictures</h3>
-
 @if (pictures == null)
 {
-    <p><em>Loading...</em></p>
+    <div class="row justify-content-end">
+        <div class="col-md-6">
+            <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Large" />
+        </div>
+    </div>
 }
 else
 {
+    <MatH2>Pictures</MatH2>
     <div class="row justify-content-end mr-3 mt-4">
         <MatButton Outlined="true" @onclick="OnAddPicture">
             @(addingPicture ? "Cancel" : "Add new picture")

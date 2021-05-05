@@ -1,16 +1,19 @@
 ﻿@page "/leaderboard"
-@inherits LeaderboardComponent; 
+@inherits LeaderboardComponent;
 @inject TokenAuthenticationStateProvider TokenProvider
 @attribute [Authorize]
 
-<h1>@title</h1>
-
 @if (gameScores == null)
 {
-    <p><em>Loading...</em></p>
+    <div class="row justify-content-end">
+        <div class="col-md-6">
+            <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Large" />
+        </div>
+    </div>
 }
 else
 {
+    <MatH2>@title</MatH2>
     <MatChipSet Filter="true">
         <MatChip Label="Show All Time Scores" IsCheckable="true" IsSelectedChanged="ShowAll"></MatChip>
     </MatChipSet>
