@@ -1,14 +1,39 @@
 ﻿@inherits ProfileInfoComponent;
 @inject TokenAuthenticationStateProvider TokenProvider;
+@inject NavigationManager UriHelper;
 
 @if (profile == null)
 {
-    <p><em>Loading...</em></p>
+    <div class="row justify-content-end mt-4">
+        <div class="col-md-6">
+            <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Large" />
+        </div>
+    </div>
 }
 else
 {
     <div class="mt-4">
-        <MatH3>@profile.Username's Profile</MatH3>
+        <MatH4 Class="text-center">@profile.Username's Profile</MatH4>
+    </div>
+    <MatDivider></MatDivider>
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <img src="@profile.ProfilePic" />
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <MatH6 Class="col-md-6">Username: </MatH6>
+                <MatBody1 Class="col-md-6">@profile.Username</MatBody1>
+            </div>
+            <div class="row">
+                <MatH6 Class="col-md-6">Email: </MatH6>
+                <MatBody1 Class="col-md-6">@profile.Email</MatBody1>
+            </div>
+            <div class="row">
+                <MatH6 Class="col-md-6">Member Since: </MatH6>
+                <MatBody1 Class="col-md-6">@profile.CreatedOn.ToLocalTime()</MatBody1>
+            </div>
+        </div>
     </div>
 }
 
@@ -23,9 +48,23 @@ else
 
         if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(token))
         {
-            httpClient = new HttpClient();
+            try
+            {
+                httpClient = new HttpClient();
+                await GetProfile(id);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("401"))
+                {
+                    await TokenProvider.SetTokenAsync(null);
+                }
+            }
 
-            await GetProfile(id);
+        }
+        else
+        {
+            UriHelper.NavigateTo("startgame");
         }
     }
 }
