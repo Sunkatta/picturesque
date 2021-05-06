@@ -12,13 +12,16 @@ namespace Picturesque.Components
     {
         public RegisterInputModel registerInputModel = new RegisterInputModel();
 
-        public bool hasSuccessfullyRegistered = false;
+        public bool hasSuccessfullyRegistered;
+        public bool loading;
         public string errorMessage;
 
         protected async Task HandleRegister()
         {
+            loading = true;
             errorMessage = string.Empty;
             StateHasChanged();
+            registerInputModel.DefaultProfilePic = ApiConstants.DefaultProfilePicInBase64;
             HttpClient client = new HttpClient();
             var response = await client.PostAsync(
                 ApiConstants.ApiUrl + "Account/Register",
@@ -33,6 +36,7 @@ namespace Picturesque.Components
 
             hasSuccessfullyRegistered = true;
             StateHasChanged();
+            loading = false;
         }
     }
 }

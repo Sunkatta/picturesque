@@ -57,6 +57,7 @@ namespace PicturesqueAPI.Controllers.Identity
                 {
                     Email = entry.Email,
                     UserName = entry.Username,
+                    ProfilePic = entry.DefaultProfilePic,
                     CreatedOn = DateTime.UtcNow,
                     IsAdmin = false,
                 };
