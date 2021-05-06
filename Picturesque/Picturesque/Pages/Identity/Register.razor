@@ -9,7 +9,7 @@
             <div class="text-center form-holder w-50">
                 <MatH6 Class="identity-text-color">A confirmation email has been sent to</MatH6>
                 <br />
-                <MatH4>@registerInputModel.Email</MatH4>
+                <MatH5>@registerInputModel.Email</MatH5>
                 <MatButton type="submit" Class="mt-2 w-100" Link="/login" Outlined="true">
                     To Login
                 </MatButton>
@@ -66,8 +66,17 @@
                         </MatTextField>
                         <ValidationMessage For="@(() => registerInputModel.ConfirmPassword)"></ValidationMessage>
                     </div>
-                    <div class="form-group text-center">
-                        <MatButton Type="submit" Class="w-100" Outlined="true">Register</MatButton>
+                    <div class="form-group">
+                        @if (loading)
+                        {
+                            <div class="row col-md-12 offset-md-5">
+                                <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Medium" />
+                            </div>
+                        }
+                        else
+                        {
+                            <MatButton Type="submit" Class="w-100" Outlined="true">Register</MatButton>
+                        }
                     </div>
                     <div class="text-center">
                         <MatButtonLink Href="/login">

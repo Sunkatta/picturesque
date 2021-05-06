@@ -8,7 +8,7 @@
 </AuthorizeView>
 
 <div class="main">
-    <div class="top-row px-4">
+    <div class="top-row px-4" style="z-index: 9998;">
         <ul class="nav navbar">
             <AuthorizeView>
                 <Authorized>
@@ -17,7 +17,7 @@
                             Hello, @context.User.Claims.FirstOrDefault(c => c.Type.ToString() == "unique_name").Value
                             <span style="font-size: 0.8em;" class="oi oi-caret-bottom ml-1"></span>
                         </MatButton>
-                        <MatMenu @ref="Menu" TargetForwardRef="@openMenuForwardRef">
+                        <MatMenu @ref="Menu" TargetForwardRef="@openMenuForwardRef" Style="z-index: 9999;">
                             <MatList>
                                 <MatListItem Href="/profile/0">Profile</MatListItem>
                                 <MatListItem OnClick="@(() => authStateProvider.SetTokenAsync(null))">Logout</MatListItem>
@@ -27,14 +27,14 @@
                 </Authorized>
                 <NotAuthorized>
                     <li class="nav-item px-3">
-                        <NavLink class="ml-md-auto" style="color: white;" href="login">
+                        <MatButtonLink Style="color: white" Href="/login">
                             Login
-                        </NavLink>
+                        </MatButtonLink>
                     </li>
                     <li class="nav-item px-3">
-                        <NavLink class="ml-md-auto" style="color: white;" href="register">
+                        <MatButtonLink Style="color: white" Href="/register">
                             Register
-                        </NavLink>
+                        </MatButtonLink>
                     </li>
                 </NotAuthorized>
             </AuthorizeView>
