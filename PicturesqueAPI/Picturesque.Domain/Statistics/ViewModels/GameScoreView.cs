@@ -6,6 +6,7 @@ namespace Picturesque.Domain
     {
         public GameScoreView(
             string username,
+            string profilePicture,
             Difficulty difficulty,
             string categoryName,
             int score,
@@ -15,6 +16,7 @@ namespace Picturesque.Domain
             DateTime createdOn)
         {
             Username = username;
+            ProfilePicture = profilePicture;
             Difficulty = difficulty;
             CategoryName = categoryName;
             Score = score;
@@ -25,6 +27,8 @@ namespace Picturesque.Domain
         }
 
         public string Username { get; set; }
+
+        public string ProfilePicture { get; set; }
 
         public Difficulty Difficulty { get; set; }
         

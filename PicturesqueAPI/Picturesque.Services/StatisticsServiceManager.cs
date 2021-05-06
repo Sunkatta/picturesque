@@ -44,6 +44,7 @@ namespace Picturesque.Services
                 gameScoresViews.Add(
                     new GameScoreView(
                         user.UserName,
+                        user.ProfilePic,
                         gc.Difficulty,
                         category.Name,
                         gc.Score,

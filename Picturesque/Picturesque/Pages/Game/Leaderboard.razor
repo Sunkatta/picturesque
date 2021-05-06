@@ -22,7 +22,7 @@ else
               FilterByColumnName="Difficulty"
               DebounceMilliseconds="150">
         <MatTableHeader>
-            <th style="width: 25%;">Username</th>
+            <th style="width: 25%;">Player</th>
             <th>Category</th>
             <th>Difficulty</th>
             <th>Score</th>
@@ -31,7 +31,10 @@ else
             <th>Help Used</th>
         </MatTableHeader>
         <MatTableRow>
-            <td>@context.Username</td>
+            <td>
+                <img class="rounded-circle mr-2" src="@context.ProfilePicture" width="25" />
+                @context.Username
+            </td>
             <td>@context.CategoryName</td>
             <td>@context.Difficulty.ToString()</td>
             <td>@context.Score</td>

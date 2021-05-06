@@ -9,6 +9,7 @@ namespace Picturesque.Models
 
         public GameScore(
             string userId,
+            string profilePicture,
             string categoryId,
             int difficulty,
             int score,
@@ -18,6 +19,7 @@ namespace Picturesque.Models
             DateTime? createdOn)
         {
             UserId = userId;
+            ProfilePicture = profilePicture;
             CategoryId = categoryId;
             Difficulty = (Difficulty)difficulty;
             Score = score;
@@ -30,7 +32,9 @@ namespace Picturesque.Models
         public string UserId { get; set; }
 
         public string Username { get; set; }
-        
+
+        public string ProfilePicture { get; set; }
+
         public string CategoryId { get; set; }
         
         public string CategoryName { get; set; }
