@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Picturesque.Application;
 using Picturesque.Domain;
@@ -156,6 +159,29 @@ namespace PicturesqueAPI.Controllers.Identity
             {
                 bool isPasswordReset = await _userManager.ResetPassword(entry.Email, entry.Password, entry.PasswordResetCode);
                 return Ok(isPasswordReset);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpPost("ChangeProfilePicture")]
+        public async Task<IActionResult> ChangeProfilePicture(List<IFormFile> files)
+        {
+            try
+            {
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return BadRequest("Unable to change user profile picture");
+                }
+
+                string newProfilePicInBase64 = await _userManager.ChangeProfilePictureAsync(files, userId);
+
+                return Ok(newProfilePicInBase64);
             }
             catch (Exception ex)
             {

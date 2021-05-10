@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,9 @@ using Microsoft.IdentityModel.Tokens;
 using Picturesque.Application;
 using Picturesque.DB;
 using Picturesque.Domain;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -50,6 +54,34 @@ namespace Picturesque.Services
             await _ctx.SaveChangesAsync();
 
             return user.IsBlocked;
+        }
+
+        public async Task<string> ChangeProfilePictureAsync(List<IFormFile> files, string userId)
+        {
+            User user = await _userManager.FindByIdAsync(userId);
+
+            if (user != null)
+            {
+                foreach (var file in files)
+                {
+                    if (file.Length > 0)
+                    {
+                        using (var image = Image.Load(file.OpenReadStream()))
+                        {
+                            image.Mutate(x => x.Resize(360, 360));
+                            string img2Base64 = image.ToBase64String(PngFormat.Instance);
+                            user.ProfilePic = img2Base64;
+                        }
+                    }
+                }
+
+                _ctx.Users.Update(user);
+                await _ctx.SaveChangesAsync();
+
+                return user.ProfilePic;
+            }
+
+            return null;
         }
 
         public async Task<bool> CheckIfUserExistsByEmail(string email)

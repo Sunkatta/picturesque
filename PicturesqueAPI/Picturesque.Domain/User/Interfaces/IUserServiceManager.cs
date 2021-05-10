@@ -1,4 +1,5 @@
-﻿using Picturesque.Application;
+﻿using Microsoft.AspNetCore.Http;
+using Picturesque.Application;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -33,5 +34,7 @@ namespace Picturesque.Domain
         Task<bool> ResetPassword(string email, string newPassword, string code);
 
         Task<ProfileView> GetProfile(string userId);
+
+        Task<string> ChangeProfilePictureAsync(List<IFormFile> files, string userId);
     }
 }
