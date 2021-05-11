@@ -180,8 +180,9 @@ namespace PicturesqueAPI.Controllers.Identity
                 }
 
                 string newProfilePicInBase64 = await _userManager.ChangeProfilePictureAsync(files, userId);
+                ProfilePictureView profilePictureView = new ProfilePictureView(newProfilePicInBase64);
 
-                return Ok(newProfilePicInBase64);
+                return Ok(profilePictureView);
             }
             catch (Exception ex)
             {
