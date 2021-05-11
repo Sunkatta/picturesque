@@ -2,6 +2,7 @@
 @using Picturesque.Models.Constants;
 @using System.IO;
 @using System.Net.Http.Headers;
+@using Newtonsoft.Json; 
 @inject TokenAuthenticationStateProvider TokenProvider;
 @inject NavigationManager UriHelper;
 
@@ -97,9 +98,10 @@ else
                 var res = await httpClient.PostAsync(ApiConstants.ApiUrl + "Account/ChangeProfilePicture",
                     content: multipartFormDataContent);
 
-                if (res.StatusCode == System.Net.HttpStatusCode.OK)
+                if (res.IsSuccessStatusCode)
                 {
-                    profile.ProfilePic = await res.Content.ReadAsStringAsync();
+                    ProfilePicture newProfilePic = JsonConvert.DeserializeObject<ProfilePicture>(await res.Content.ReadAsStringAsync());
+                    profile.ProfilePic = newProfilePic.Image2Base64;
                     StateHasChanged();
                 }
             }
