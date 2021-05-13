@@ -36,7 +36,16 @@ else
             </div>
             <div class="row">
                 <MatH6 Class="col-md-6">Member Since: </MatH6>
-                <MatBody1 Class="col-md-6">@profile.CreatedOn.ToLocalTime()</MatBody1>
+                <MatBody1 Class="col-md-6">@profile.CreatedOn.ToLocalTime().ToString("dd MMM yyyy")</MatBody1>
+            </div>
+            <div class="row">
+                <MatButton Outlined="true" Class="col-md-12" Label="Change Password" OnClick="SendForgotPasswordEmail"></MatButton>
+                <MatSnackbar @bind-IsOpen="@hasEmailBeenSent">
+                    <MatSnackbarContent>Reset password email has been sent to @profile.Email.</MatSnackbarContent>
+                    <MatSnackbarActions>
+                        <MatIconButton Icon="close" Class="text-white" OnClick="@(() => hasEmailBeenSent = false)"></MatIconButton>
+                    </MatSnackbarActions>
+                </MatSnackbar>
             </div>
         </div>
     </div>
