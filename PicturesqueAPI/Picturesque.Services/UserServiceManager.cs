@@ -64,7 +64,7 @@ namespace Picturesque.Services
             {
                 foreach (var file in files)
                 {
-                    if (file.Length > 0)
+                    if (file.Length > 0 && (file.FileName.EndsWith(".jpg") || file.FileName.EndsWith(".png")))
                     {
                         using (var image = Image.Load(file.OpenReadStream()))
                         {
