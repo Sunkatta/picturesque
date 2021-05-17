@@ -12,16 +12,11 @@ namespace Picturesque.Components
 {
     public class StartGameComponent : ComponentBase
     {
-        public const int EASY_MODE_SECONDS = 60;
-        public const int EASY_MODE_MISTAKES_ALLOWED = 10;
-        public const int MEDIUM_MODE_SECONDS = 120;
-        public const int MEDIUM_MODE_MISTAKES_ALLOWED = 32;
-        public const int HARD_MODE_SECONDS = 900;
-        public const int HARD_MODE_MISTAKES_ALLOWED = 50;
-
         public int numberOfSelectedPictures = 0;
         public int numberOfPicturesVisible = 0;
         public int score = 0;
+        public int completedInSeconds = 0;
+        public int mistakesMade = 0;
         public int numberOfMistakesAllowed;
         public int counter;
 
@@ -37,21 +32,19 @@ namespace Picturesque.Components
         public GameOptionsInputModel gameOptionsInputModel = new GameOptionsInputModel();
         public Models.Game game = new Models.Game();
 
+        public string userId;
+
         private Timer timer;
+        protected HttpClient client;
 
-        protected override async Task OnInitializedAsync()
+        protected async Task GetGameOptions()
         {
-            CleanUp();
-            game.Pictures = new List<Picture>();
-
-            HttpClient client = new HttpClient();
             gameOptions = await client.GetJsonAsync<GameOptions>(ApiConstants.ApiUrl + "Game/GetGameOptions");
         }
 
         protected async Task StartGame()
         {
             CleanUp();
-            HttpClient client = new HttpClient();
             game = await client.PostJsonAsync<Models.Game>(
                     ApiConstants.ApiUrl + "Game/StartGame",
                     gameOptionsInputModel
@@ -120,22 +113,61 @@ namespace Picturesque.Components
             isHelpBeingUsed = false;
         }
 
+        protected void CleanUp()
+        {
+            gameHasStarted = false;
+            gameHasEnded = false;
+            hasWon = false;
+            hasLost = false;
+            isHelpUsed = false;
+            score = 0;
+            numberOfPicturesVisible = 0;
+
+            if (timer != null)
+            {
+                timer.Dispose();
+            }
+
+            StateHasChanged();
+        }
+
+        protected void CalculatePlaytimeAndMistakes()
+        {
+            switch (game.Difficulty)
+            {
+                case 0:
+                    completedInSeconds = GameConstants.EASY_MODE_SECONDS - counter;
+                    mistakesMade = GameConstants.EASY_MODE_MISTAKES_ALLOWED - numberOfMistakesAllowed;
+                    break;
+                case 1:
+                    completedInSeconds = GameConstants.MEDIUM_MODE_SECONDS - counter;
+                    mistakesMade = GameConstants.MEDIUM_MODE_MISTAKES_ALLOWED - numberOfMistakesAllowed;
+                    break;
+                case 2:
+                    completedInSeconds = GameConstants.HARD_MODE_SECONDS - counter;
+                    mistakesMade = GameConstants.HARD_MODE_MISTAKES_ALLOWED - numberOfMistakesAllowed;
+                    break;
+                default:
+                    break;
+            }
+        }
+
         private void SetCounter()
         {
             switch (game.Difficulty)
             {
                 case 0:
-                    counter = EASY_MODE_SECONDS;
-                    numberOfMistakesAllowed = EASY_MODE_MISTAKES_ALLOWED;
+                    counter = GameConstants.EASY_MODE_SECONDS;
+                    numberOfMistakesAllowed = GameConstants.EASY_MODE_MISTAKES_ALLOWED;
                     break;
                 case 1:
-                    counter = MEDIUM_MODE_SECONDS;
-                    numberOfMistakesAllowed = MEDIUM_MODE_MISTAKES_ALLOWED;
+                    counter = GameConstants.MEDIUM_MODE_SECONDS;
+                    numberOfMistakesAllowed = GameConstants.MEDIUM_MODE_MISTAKES_ALLOWED;
                     break;
                 // TOOD: Tweak Hard mode
                 case 2:
-                    counter = HARD_MODE_SECONDS;
-                    numberOfMistakesAllowed = HARD_MODE_MISTAKES_ALLOWED;
+                    counter = GameConstants.HARD_MODE_SECONDS;
+                    numberOfMistakesAllowed = GameConstants.HARD_MODE_MISTAKES_ALLOWED;
                     break;
                 default:
                     break;
@@ -144,7 +176,7 @@ namespace Picturesque.Components
 
         private void StartCountdown()
         {
-            timer = new Timer(new TimerCallback(_ =>
+            timer = new Timer(new TimerCallback(async _ =>
             {
                 if (counter <= 0 || numberOfMistakesAllowed == 0)
                 {
@@ -155,6 +187,9 @@ namespace Picturesque.Components
                         gameHasStarted = false;
                         timer.Dispose();
                         StateHasChanged();
+
+                        await SendUserStatistics(false);
+
                         return;
                     }
                 }
@@ -171,7 +206,7 @@ namespace Picturesque.Components
             await Task.Delay(250);
             if (String.Compare(picture.Img2Base64.ToLower(), selectedPicture.Img2Base64.ToLower()) == 0)
             {
-                HandleSuccess();
+                await HandleSuccess();
             }
             else
             {
@@ -183,7 +218,7 @@ namespace Picturesque.Components
             return picture;
         }
 
-        private void HandleSuccess()
+        private async Task HandleSuccess()
         {
             score += 100 * numberOfMistakesAllowed;
             numberOfPicturesVisible++;
@@ -192,6 +227,8 @@ namespace Picturesque.Components
                 hasWon = true;
                 gameHasEnded = true;
                 timer.Dispose();
+
+                await SendUserStatistics(true);
             }
         }
 
@@ -202,22 +239,23 @@ namespace Picturesque.Components
             numberOfMistakesAllowed--;
         }
 
-        private void CleanUp()
+        private async Task SendUserStatistics(bool hasWon)
         {
-            gameHasStarted = false;
-            gameHasEnded = false;
-            hasWon = false;
-            hasLost = false;
-            isHelpUsed = false;
-            score = 0;
-            numberOfPicturesVisible = 0;
+            CalculatePlaytimeAndMistakes();
 
-            if (timer != null)
+            UserStatistics userStatistics = new UserStatistics()
             {
-                timer.Dispose();
-            }
-            
-            StateHasChanged();
+                UserId = userId,
+                HasWon = hasWon,
+                Playtime = completedInSeconds,
+                NumberOfMistakes = mistakesMade,
+                Score = score,
+            };
+
+            await client.PostJsonAsync(
+                    ApiConstants.ApiUrl + "Statistics/UserStatistics",
+                    userStatistics
+                    );
         }
     }
 }
