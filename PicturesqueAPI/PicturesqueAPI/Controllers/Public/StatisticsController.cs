@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Picturesque.Application;
@@ -48,6 +46,26 @@ namespace PicturesqueAPI.Controllers.Public
                     entry.IsHelpUsed);
 
                 await _statisticsServiceManager.CreateGameScoreAsync(gc);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("UserStatistics")]
+        public async Task<IActionResult> UserStatistics([FromBody] UserStatisticsEntry entry)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(entry.UserId))
+                {
+                    return NotFound("User not found");
+                }
+
+                await _statisticsServiceManager.CollectUserStatistics(entry);
 
                 return Ok();
             }

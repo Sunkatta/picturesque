@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Picturesque.Application;
 using Picturesque.DB;
 using Picturesque.Domain;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Picturesque.Services
@@ -24,6 +23,37 @@ namespace Picturesque.Services
             _ctx = ctx;
             _categoryServiceManager = categoryServiceManager;
             _userServiceManager = userServiceManager;
+        }
+
+        public async Task CollectUserStatistics(UserStatisticsEntry userStatisticsEntry)
+        {
+            UserStatistics userStatistics = await _ctx.UserStatistics
+                .FirstOrDefaultAsync(x => x.UserId == userStatisticsEntry.UserId);
+
+            if (userStatistics != null)
+            {
+                userStatistics.GamesWon = userStatisticsEntry.HasWon ? ++userStatistics.GamesWon : userStatistics.GamesWon;
+                userStatistics.GamesLost = userStatisticsEntry.HasWon ? userStatistics.GamesLost : ++userStatistics.GamesLost;
+                userStatistics.TotalScore += userStatisticsEntry.Score;
+                userStatistics.TotalNumberOfMistakes += userStatisticsEntry.NumberOfMistakes;
+                userStatistics.TotalPlaytime += userStatisticsEntry.Playtime;
+
+                _ctx.Update(userStatistics);
+                await _ctx.SaveChangesAsync();
+            }
+            else
+            {
+                UserStatistics newUserStatistics = new UserStatistics(
+                    userStatisticsEntry.UserId,
+                    userStatisticsEntry.HasWon ? 1 : 0,
+                    userStatisticsEntry.HasWon ? 0 : 1,
+                    userStatisticsEntry.Score,
+                    userStatisticsEntry.NumberOfMistakes,
+                    userStatisticsEntry.Playtime);
+
+                await _ctx.AddAsync(newUserStatistics);
+                await _ctx.SaveChangesAsync();
+            }
         }
 
         public async Task CreateGameScoreAsync(GameScore score)
