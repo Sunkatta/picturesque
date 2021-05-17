@@ -17,6 +17,8 @@ namespace Picturesque.DB
 
         public DbSet<GameScore> GameScores { get; set; }
 
+        public DbSet<UserStatistics> UserStatistics { get; set; }
+
         public DbSet<PicturesCategories> PicturesCategories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
