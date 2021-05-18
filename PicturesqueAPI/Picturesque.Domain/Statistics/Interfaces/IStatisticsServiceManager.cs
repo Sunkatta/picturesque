@@ -11,5 +11,7 @@ namespace Picturesque.Domain
         Task<IEnumerable<GameScoreView>> GetTop20PlayersAsync();
 
         Task CollectUserStatistics(UserStatisticsEntry userStatisticsEntry);
+
+        Task<UserStatisticsView> GetUserStatistics(string userId);
     }
 }

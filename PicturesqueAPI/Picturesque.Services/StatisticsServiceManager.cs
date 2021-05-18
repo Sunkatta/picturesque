@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Picturesque.Application;
 using Picturesque.DB;
 using Picturesque.Domain;
@@ -13,16 +14,19 @@ namespace Picturesque.Services
         private readonly PicturesqueDbContext _ctx;
         private readonly ICategoryServiceManager _categoryServiceManager;
         private readonly IUserServiceManager _userServiceManager;
+        private readonly IMapper _mapper;
 
         public StatisticsServiceManager(
             PicturesqueDbContext ctx,
             ICategoryServiceManager categoryServiceManager,
-            IUserServiceManager userServiceManager
+            IUserServiceManager userServiceManager,
+            IMapper mapper
         )
         {
             _ctx = ctx;
             _categoryServiceManager = categoryServiceManager;
             _userServiceManager = userServiceManager;
+            _mapper = mapper;
         }
 
         public async Task CollectUserStatistics(UserStatisticsEntry userStatisticsEntry)
@@ -86,6 +90,19 @@ namespace Picturesque.Services
             }
 
             return gameScoresViews.OrderByDescending(gc => gc.Score);
+        }
+
+        public async Task<UserStatisticsView> GetUserStatistics(string userId)
+        {
+            UserStatistics userStatistics = await _ctx.UserStatistics.FirstOrDefaultAsync(x => x.UserId == userId);
+            UserStatisticsView userStatisticsView = null;
+
+            if (userStatistics != null)
+            {
+                userStatisticsView = _mapper.Map<UserStatisticsView>(userStatistics);
+            }
+
+            return userStatisticsView;
         }
     }
 }

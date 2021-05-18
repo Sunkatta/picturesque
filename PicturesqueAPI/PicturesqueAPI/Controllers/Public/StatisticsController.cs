@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Picturesque.Application;
 using Picturesque.Domain;
@@ -68,6 +69,22 @@ namespace PicturesqueAPI.Controllers.Public
                 await _statisticsServiceManager.CollectUserStatistics(entry);
 
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpGet("GetUserStatistics/{id}")]
+        public async Task<IActionResult> GetUserStatistics(string id)
+        {
+            try
+            {
+                UserStatisticsView userStatisticsView = await _statisticsServiceManager.GetUserStatistics(id);
+
+                return Ok(userStatisticsView);
             }
             catch (Exception ex)
             {
