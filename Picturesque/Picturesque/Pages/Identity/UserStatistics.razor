@@ -1,0 +1,94 @@
+﻿@inherits UserStatisticsComponent;
+@using System.Globalization;
+@inject TokenAuthenticationStateProvider TokenProvider;
+
+@if (loading)
+{
+    <div class="row justify-content-end mt-4">
+        <div class="col-md-6">
+            <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Large" />
+        </div>
+    </div>
+}
+else
+{
+    if (userStatistics == null)
+    {
+        <div class="mt-4">
+            <MatH5 Class="text-center">We could not find any statistics for this profile. Go ahead and play some games.</MatH5>
+        </div>
+    }
+    else
+    {
+        <div class="row m-4">
+            <div class="col-md-3">
+                <MatCard>
+                    <MatCardContent>
+                        <div class="m-4 text-center">
+                            <MatH3>
+                                @(string.Format("{0:0.00%}", (double)userStatistics.GamesWon / (userStatistics.GamesWon + userStatistics.GamesLost)))
+                            </MatH3>
+                            <MatH5>Win Rate</MatH5>
+                        </div>
+                    </MatCardContent>
+                </MatCard>
+            </div>
+            <div class="col-md-3">
+                <MatCard>
+                    <MatCardContent>
+                        <div class="m-4 text-center">
+                            <MatH3>
+                                @userStatistics.TotalScore
+                            </MatH3>
+                            <MatH5>Total Score</MatH5>
+                        </div>
+                    </MatCardContent>
+                </MatCard>
+            </div>
+            <div class="col-md-3">
+                <MatCard>
+                    <MatCardContent>
+                        <div class="m-4 text-center">
+                            <MatH3>
+                                @userStatistics.TotalNumberOfMistakes
+                            </MatH3>
+                            <MatH5>Mistakes Made</MatH5>
+                        </div>
+                    </MatCardContent>
+                </MatCard>
+            </div>
+            <div class="col-md-3">
+                <MatCard>
+                    <MatCardContent>
+                        <div class="m-4 text-center">
+                            <MatH3>
+                                @(TimeSpan.FromSeconds(userStatistics.TotalPlaytime).ToString(@"hh\:mm\:ss"))
+                            </MatH3>
+                            <MatH5>Playtime</MatH5>
+                        </div>
+                    </MatCardContent>
+                </MatCard>
+            </div>
+        </div>
+    }
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+        token = await TokenProvider.GetTokenAsync();
+        string id = (await TokenProvider.GetAuthenticationStateAsync())
+            .User
+            .Claims
+            .FirstOrDefault(c => c.Type.ToString() == "sub")?.Value;
+
+        if (!string.IsNullOrEmpty(id))
+        {
+            httpClient = new HttpClient();
+            await GetUserStatistics(id);
+        }
+
+        loading = false;
+    }
+} 

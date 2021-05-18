@@ -243,7 +243,7 @@ namespace Picturesque.Components
         {
             CalculatePlaytimeAndMistakes();
 
-            UserStatistics userStatistics = new UserStatistics()
+            UserStatisticsInputModel userStatistics = new UserStatisticsInputModel()
             {
                 UserId = userId,
                 HasWon = hasWon,

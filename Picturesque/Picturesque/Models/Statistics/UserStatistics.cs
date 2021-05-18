@@ -2,14 +2,14 @@
 {
     public class UserStatistics
     {
-        public string UserId { get; set; }
+        public int GamesWon { get; set; }
 
-        public bool HasWon { get; set; }
+        public int GamesLost { get; set; }
 
-        public int Playtime { get; set; }
+        public int TotalScore { get; set; }
 
-        public int NumberOfMistakes { get; set; }
+        public int TotalNumberOfMistakes { get; set; }
 
-        public int Score { get; set; }
+        public int TotalPlaytime { get; set; }
     }
 }
