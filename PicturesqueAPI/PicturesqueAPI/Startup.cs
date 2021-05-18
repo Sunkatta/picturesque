@@ -98,6 +98,7 @@ namespace PicturesqueAPI
                 mc.CreateMap<Category, CategoryView>();
                 mc.CreateMap<Picture, PictureView>();
                 mc.CreateMap<User, UserView>();
+                mc.CreateMap<UserStatistics, UserStatisticsView>();
             });
 
             IMapper mapper = mappingConfig.CreateMapper();
