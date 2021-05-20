@@ -1,4 +1,6 @@
-﻿namespace Picturesque.Models
+﻿using System.Collections.Generic;
+
+namespace Picturesque.Models
 {
     public class UserStatistics
     {
@@ -11,5 +13,7 @@
         public int TotalNumberOfMistakes { get; set; }
 
         public int TotalPlaytime { get; set; }
+
+        public List<int> DailyWonGamesScore { get; set; }
     }
 }
