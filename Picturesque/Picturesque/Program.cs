@@ -1,4 +1,6 @@
-﻿using MatBlazor;
+﻿using Blazorise;
+using Blazorise.Bootstrap;
+using MatBlazor;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +24,7 @@ namespace Picturesque
             builder.Services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<TokenAuthenticationStateProvider>());
             builder.Services.AddFileReaderService(options => options.UseWasmSharedBuffer = true);
             builder.Services.AddMatBlazor();
+            builder.Services.AddBlazorise().AddBootstrapProviders();
 
             await builder.Build().RunAsync();
         }
