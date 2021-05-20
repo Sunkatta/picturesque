@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Picturesque.Application;
 using Picturesque.DB;
 using Picturesque.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -99,7 +100,34 @@ namespace Picturesque.Services
 
             if (userStatistics != null)
             {
+                List<GameScore> userGameScores = await _ctx.GameScores
+                    .Where(x => x.UserId == userId && x.CreatedOn.ToLocalTime() > DateTime.Now.AddDays(-7))
+                    .OrderBy(x => x.CreatedOn)
+                    .ToListAsync();
+
+                var groupedScores = userGameScores.GroupBy(x => x.CreatedOn.Date.Day);
+                List<int> dailyWonGamesScores = new List<int>();
+
+                for (int i = DateTime.Now.AddDays(-6).Day; i <= DateTime.Now.Day; i++)
+                {
+                    if (groupedScores.Select(x => x.Key).Contains(i))
+                    {
+                        foreach (var groupedScore in groupedScores.Where(x => x.Key == i))
+                        {
+                            if (groupedScore.Key == i)
+                            {
+                                dailyWonGamesScores.Add(groupedScore.Sum(x => x.Score));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        dailyWonGamesScores.Add(0);
+                    }
+                }
+
                 userStatisticsView = _mapper.Map<UserStatisticsView>(userStatistics);
+                userStatisticsView.DailyWonGamesScore = dailyWonGamesScores;
             }
 
             return userStatisticsView;

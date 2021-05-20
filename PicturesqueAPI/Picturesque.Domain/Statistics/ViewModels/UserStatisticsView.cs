@@ -1,4 +1,6 @@
-﻿namespace Picturesque.Domain
+﻿using System.Collections.Generic;
+
+namespace Picturesque.Domain
 {
     public class UserStatisticsView
     {
@@ -11,5 +13,7 @@
         public int TotalNumberOfMistakes { get; set; }
 
         public int TotalPlaytime { get; set; }
+
+        public List<int> DailyWonGamesScore { get; set; }
     }
 }
