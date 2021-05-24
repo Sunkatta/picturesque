@@ -1,6 +1,6 @@
 ﻿@inherits UserStatisticsComponent;
-@using System.Globalization;
 @inject TokenAuthenticationStateProvider TokenProvider;
+@inject NavigationManager UriHelper; 
 
 @if (loading)
 {
@@ -79,48 +79,6 @@ else
 }
 
 @code {
-    LineChart<int> lineChart;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (lineChart != null)
-        {
-            await HandleRedraw();
-        }
-    }
-
-    async Task HandleRedraw()
-    {
-        await lineChart.Clear();
-
-        await lineChart.AddLabelsDatasetsAndUpdate(Labels, GetLineChartDataset());
-    }
-
-    LineChartDataset<int> GetLineChartDataset()
-    {
-        return new LineChartDataset<int>
-        {
-            Label = "Daily Score Of All Won Games In The Past Week",
-            Data = userStatistics.DailyWonGamesScore,
-            BackgroundColor = backgroundColors,
-            BorderColor = borderColors,
-            Fill = true,
-            PointRadius = 2,
-            BorderDash = new List<int> { }
-        };
-    }
-
-    string[] Labels = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
-    List<string> backgroundColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.2f), ChartColor.FromRgba(54, 162, 235, 0.2f), ChartColor.FromRgba(255, 206, 86, 0.2f), ChartColor.FromRgba(75, 192, 192, 0.2f), ChartColor.FromRgba(153, 102, 255, 0.2f), ChartColor.FromRgba(255, 159, 64, 0.2f) };
-    List<string> borderColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f), ChartColor.FromRgba(54, 162, 235, 1f), ChartColor.FromRgba(255, 206, 86, 1f), ChartColor.FromRgba(75, 192, 192, 1f), ChartColor.FromRgba(153, 102, 255, 1f), ChartColor.FromRgba(255, 159, 64, 1f) };
-
-    List<int> RandomizeData()
-    {
-        var r = new Random(DateTime.Now.Millisecond);
-
-        return new List<int> { r.Next(3, 50) * r.Next(), r.Next(3, 50) * r.Next(), r.Next(3, 50) * r.Next(), r.Next(3, 50) * r.Next(), r.Next(3, 50) * r.Next(), r.Next(3, 50) * r.Next(), r.Next(3, 50) * r.Next() };
-    }
-
     protected override async Task OnInitializedAsync()
     {
         loading = true;
@@ -132,8 +90,23 @@ else
 
         if (!string.IsNullOrEmpty(id))
         {
-            httpClient = new HttpClient();
-            await GetUserStatistics(id);
+            try
+            {
+                httpClient = new HttpClient();
+                await GetUserStatistics(id);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("401"))
+                {
+                    await TokenProvider.SetTokenAsync(null);
+                }
+            }
+
+        }
+        else
+        {
+            UriHelper.NavigateTo("startgame");
         }
 
         loading = false;
