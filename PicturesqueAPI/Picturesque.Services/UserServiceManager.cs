@@ -166,6 +166,8 @@ namespace Picturesque.Services
             {
                 profile = new ProfileView()
                 {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
                     Email = user.Email,
                     Username = user.UserName,
                     CreatedOn = user.CreatedOn,
@@ -223,6 +225,34 @@ namespace Picturesque.Services
             }
 
             return false;
+        }
+
+        public async Task<ProfileView> UpdateProfile(ProfileInfoEntry profileInfoEntry)
+        {
+            User user = await _userManager.FindByIdAsync(profileInfoEntry.UserId);
+            ProfileView profile = null;
+
+            if (user != null)
+            {
+                user.UserName = profileInfoEntry.Username;
+                user.FirstName = profileInfoEntry.FirstName;
+                user.LastName = profileInfoEntry.LastName;
+
+                _ctx.Users.Update(user);
+                await _ctx.SaveChangesAsync();
+
+                profile = new ProfileView()
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Username = user.UserName,
+                    Email = user.Email,
+                    CreatedOn = user.CreatedOn,
+                    ProfilePic = user.ProfilePic,
+                };
+            }
+
+            return profile;
         }
 
         private string GenerateJSONWebToken(LoginUserEntry userInfo)

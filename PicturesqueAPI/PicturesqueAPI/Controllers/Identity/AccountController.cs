@@ -22,13 +22,30 @@ namespace PicturesqueAPI.Controllers.Identity
             _userManager = userManager;
         }
 
-        [HttpGet("Profile/{id}")]
         [Authorize]
+        [HttpGet("Profile/{id}")]
         public async Task<IActionResult> Profile(string id)
         {
             try
             {
                 ProfileView profile = await _userManager.GetProfile(id);
+                return Ok(profile);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpPost("Profile/{id}")]
+        public async Task<IActionResult> Profile(string id, [FromBody] ProfileInfoEntry profileInfoEntry)
+        {
+            try
+            {
+                profileInfoEntry.UserId = id;
+                ProfileView profile = await _userManager.UpdateProfile(profileInfoEntry);
+
                 return Ok(profile);
             }
             catch (Exception ex)

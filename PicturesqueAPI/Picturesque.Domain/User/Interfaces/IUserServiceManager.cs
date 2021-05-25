@@ -35,6 +35,8 @@ namespace Picturesque.Domain
 
         Task<ProfileView> GetProfile(string userId);
 
+        Task<ProfileView> UpdateProfile(ProfileInfoEntry profileInfoEntry);
+
         Task<string> ChangeProfilePictureAsync(List<IFormFile> files, string userId);
     }
 }
