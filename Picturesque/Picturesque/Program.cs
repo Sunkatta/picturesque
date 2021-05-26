@@ -24,6 +24,15 @@ namespace Picturesque
             builder.Services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<TokenAuthenticationStateProvider>());
             builder.Services.AddFileReaderService(options => options.UseWasmSharedBuffer = true);
             builder.Services.AddMatBlazor();
+            builder.Services.AddMatToaster(config =>
+            {
+                config.Position = MatToastPosition.BottomLeft;
+                config.PreventDuplicates = true;
+                config.NewestOnTop = true;
+                config.ShowCloseButton = true;
+                config.MaximumOpacity = 100;
+                config.VisibleStateDuration = 3000;
+            });
             builder.Services.AddBlazorise().AddBootstrapProviders();
 
             await builder.Build().RunAsync();

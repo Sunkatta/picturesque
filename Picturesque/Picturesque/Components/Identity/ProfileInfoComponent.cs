@@ -10,9 +10,11 @@ namespace Picturesque.Components
 {
     public class ProfileInfoComponent : ComponentBase
     {
+        [Inject]
+        protected MatBlazor.IMatToaster Toaster { get; set; }
+
         protected string token;
         protected string username;
-        protected string errorMessage;
         protected string id;
 
         protected bool hasEmailBeenSent;
@@ -33,12 +35,12 @@ namespace Picturesque.Components
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 var response = await httpClient.PostJsonAsync<Profile>(ApiConstants.ApiUrl + "Account/Profile/" + id, profile);
                 profile = response;
+                Toaster.Add("Profile updated successfully", MatBlazor.MatToastType.Success);
             }
             catch (Exception)
             {
-                errorMessage = "There was an error while updating your profile...";
+                Toaster.Add("There was an error while updating your profile", MatBlazor.MatToastType.Danger);
             }
-            
         }
 
         protected async Task SendForgotPasswordEmail()

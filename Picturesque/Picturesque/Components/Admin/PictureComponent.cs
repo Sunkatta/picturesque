@@ -14,12 +14,15 @@ namespace Picturesque.Components
 {
     public class PictureComponent : ComponentBase
     {
-        public List<Picture> pictures;
-        public Picture picture = new Picture();
-        public Category[] categories;
-        public bool addingPicture = false;
-        public bool editingPicture = false;
-        public string token;
+        [Inject]
+        protected MatBlazor.IMatToaster Toaster { get; set; }
+
+        protected List<Picture> pictures;
+        protected Picture picture = new Picture();
+        protected Category[] categories;
+        protected bool addingPicture = false;
+        protected bool editingPicture = false;
+        protected string token;
 
         protected HttpClient client;
 
@@ -60,10 +63,12 @@ namespace Picturesque.Components
                 pictures[pictures.FindIndex(i => i.Id == picture.Id)] = picture;
                 editingPicture = false;
                 picture = new Picture();
+                Toaster.Add("Picture category updated successfully", MatBlazor.MatToastType.Success);
             }
             else
             {
                 pictures[pictures.FindIndex(i => i.Id == picture.Id)] = oldPic;
+                Toaster.Add("There was an error while updating picture category", MatBlazor.MatToastType.Danger);
             }
         }
 
@@ -72,6 +77,7 @@ namespace Picturesque.Components
             picture = pictures.FirstOrDefault(c => c.Id == pictureId);
             pictures = await client.PostJsonAsync<List<Picture>>(ApiConstants.ApiUrl + "Picture/DeletePicture", picture);
             picture = new Picture();
+            Toaster.Add("Picture deleted successfully", MatBlazor.MatToastType.Success);
         }
     }
 }

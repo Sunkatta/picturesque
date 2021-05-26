@@ -6,6 +6,7 @@
 @inject TokenAuthenticationStateProvider TokenProvider;
 @inject NavigationManager UriHelper;
 @inject IFileReaderService fileReaderService;
+@inject IMatToaster Toaster; 
 @attribute [Authorize]
 
 @if (pictures == null)
@@ -127,5 +128,6 @@ else
         var res = await Http.PostAsync(ApiConstants.ApiUrl + "Picture/UploadPictures",
             content: multipartFormDataContent);
         pictures = await GetPictures();
+        Toaster.Add("Pictures added successfully", MatBlazor.MatToastType.Success);
     }
 }

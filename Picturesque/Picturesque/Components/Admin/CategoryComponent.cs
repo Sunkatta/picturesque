@@ -11,12 +11,17 @@ namespace Picturesque.Components
 {
     public class CategoryComponent : ComponentBase
     {
-        public Category[] categories;
-        public Category category = new Category();
-        public bool addingCategory = false;
-        public bool editingCategory = false;
-        public string errorMessage;
-        public string token;
+        [Inject]
+        protected MatBlazor.IMatToaster Toaster { get; set; }
+
+        protected Category[] categories;
+        protected Category category = new Category();
+
+        protected bool addingCategory = false;
+        protected bool editingCategory = false;
+
+        protected string token;
+        protected string oldCategoryName;
 
         protected HttpClient client;
 
@@ -30,7 +35,6 @@ namespace Picturesque.Components
         protected void OnAddCategory()
         {
             addingCategory = !addingCategory;
-            errorMessage = string.Empty;
             editingCategory = false;
             category = new Category();
         }
@@ -40,6 +44,7 @@ namespace Picturesque.Components
             editingCategory = !editingCategory;
             addingCategory = false;
             category = categories.FirstOrDefault(c => c.Id == categoryId);
+            oldCategoryName = category.Name;
         }
 
         protected async Task AddCategory()
@@ -51,12 +56,13 @@ namespace Picturesque.Components
                 categories = await client.GetJsonAsync<Category[]>(ApiConstants.ApiUrl + "Category");
                 addingCategory = false;
                 category = new Category();
+                Toaster.Add("Category added successfully", MatBlazor.MatToastType.Success);
             }
             catch (Exception ex)
             {
                 if (ex.Message.Contains("400"))
                 {
-                    errorMessage = "Category already exists";
+                    Toaster.Add("Category already exists", MatBlazor.MatToastType.Danger);
                 }
             }
 
@@ -71,12 +77,14 @@ namespace Picturesque.Components
                 categories = await client.GetJsonAsync<Category[]>(ApiConstants.ApiUrl + "Category");
                 editingCategory = false;
                 category = new Category();
+                Toaster.Add("Category updated successfully", MatBlazor.MatToastType.Success);
             }
             catch (Exception ex)
             {
                 if (ex.Message.Contains("400"))
                 {
-                    errorMessage = "Category already exists";
+                    category.Name = oldCategoryName;
+                    Toaster.Add("Category already exists", MatBlazor.MatToastType.Danger);
                 }
             }
 
@@ -87,6 +95,7 @@ namespace Picturesque.Components
             category = categories.FirstOrDefault(c => c.Id == categoryId);
             categories = await client.PostJsonAsync<Category[]>(ApiConstants.ApiUrl + "Category/DeleteCategory", category);
             category = new Category();
+            Toaster.Add("Category deleted successfully", MatBlazor.MatToastType.Success);
         }
     }
 }

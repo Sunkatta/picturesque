@@ -34,7 +34,6 @@ else
                 </MatTextField>
                 <ValidationMessage For="@(() => category)"></ValidationMessage>
             </div>
-            <p class="text-danger">@errorMessage</p>
             <MatButton Type="submit" Class="mt-2 w-100" Outlined="true">Create Category</MatButton>
         </EditForm>
     }
@@ -52,7 +51,6 @@ else
                               @bind-Value="category.Name">
                 </MatTextField>
             </div>
-            <p class="text-danger">@errorMessage</p>
             <MatButton Type="submit" Class="mt-2 w-100" Outlined="true">Edit Category</MatButton>
         </EditForm>
     }

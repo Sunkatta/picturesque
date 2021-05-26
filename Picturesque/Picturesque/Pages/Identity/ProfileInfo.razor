@@ -29,8 +29,6 @@ else
             <EditForm Model="profile" OnValidSubmit="HandleProfileUpdate">
                 <DataAnnotationsValidator></DataAnnotationsValidator>
 
-                <p class="text-danger text-center">@((MarkupString)errorMessage)</p>
-
                 <div class="form-group">
                     <MatTextField Class="w-100"
                                   Required="true"
