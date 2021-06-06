@@ -108,13 +108,16 @@ namespace Picturesque.Services
                 var groupedScores = userGameScores.GroupBy(x => x.CreatedOn.Date.Day);
                 List<int> dailyWonGamesScores = new List<int>();
 
-                for (int i = DateTime.Now.AddDays(-6).Day; i <= DateTime.Now.Day; i++)
+                DateTime start = DateTime.Now.AddDays(-6);
+                DateTime end = DateTime.Now;
+
+                for (var date = start.Date; date.Date <= end.Date; date = date.AddDays(1))
                 {
-                    if (groupedScores.Select(x => x.Key).Contains(i))
+                    if (groupedScores.Select(x => x.Key).Contains(date.Day))
                     {
-                        foreach (var groupedScore in groupedScores.Where(x => x.Key == i))
+                        foreach (var groupedScore in groupedScores.Where(x => x.Key == date.Day))
                         {
-                            if (groupedScore.Key == i)
+                            if (groupedScore.Key == date.Day)
                             {
                                 dailyWonGamesScores.Add(groupedScore.Sum(x => x.Score));
                             }
