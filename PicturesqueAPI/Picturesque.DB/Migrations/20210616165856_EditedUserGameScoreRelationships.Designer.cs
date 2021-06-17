@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Picturesque.DB;
 
 namespace Picturesque.DB.Migrations
 {
     [DbContext(typeof(PicturesqueDbContext))]
-    partial class PicturesqueDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210616165856_EditedUserGameScoreRelationships")]
+    partial class EditedUserGameScoreRelationships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -276,8 +278,6 @@ namespace Picturesque.DB.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("UserStatistics");
                 });
 
@@ -344,13 +344,6 @@ namespace Picturesque.DB.Migrations
                         .WithMany("Categories")
                         .HasForeignKey("PictureId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Picturesque.Domain.UserStatistics", b =>
-                {
-                    b.HasOne("Picturesque.Domain.User", "User")
-                        .WithMany("UserStatistics")
-                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
+using System.Collections.Generic;
 
 namespace Picturesque.Domain
 {
@@ -16,5 +17,11 @@ namespace Picturesque.Domain
         public DateTime CreatedOn { get; set; }
 
         public string ProfilePic { get; set; }
+
+        public ICollection<GameScore> GameScores { get; private set; } =
+            new HashSet<GameScore>();
+
+        public ICollection<UserStatistics> UserStatistics { get; private set; } =
+            new HashSet<UserStatistics>();
     }
 }

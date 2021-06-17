@@ -38,6 +38,8 @@ namespace Picturesque.Domain
 
         public string UserId { get; private set; }
 
+        public User User { get; set; }
+
         public string CategoryId { get; private set; }
 
         public int Score { get; private set; }

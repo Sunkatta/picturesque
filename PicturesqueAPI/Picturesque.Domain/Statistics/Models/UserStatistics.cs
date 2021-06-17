@@ -35,6 +35,8 @@ namespace Picturesque.Domain
 
         public string UserId { get; private set; }
 
+        public User User { get; set; }
+
         public int GamesWon { get; set; }
 
         public int GamesLost { get; set; }
